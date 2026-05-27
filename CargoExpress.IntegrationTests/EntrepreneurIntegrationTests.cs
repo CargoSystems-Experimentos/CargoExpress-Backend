@@ -1,0 +1,143 @@
+using ACME.CargoExpress.API.User.Domain.Model.Aggregates;
+using ACME.CargoExpress.API.User.Domain.Model.Commands;
+using ACME.CargoExpress.API.User.Infrastructure.Persistence.EFC.Repositories;
+using ACME.CargoExpress.API.Shared.Infrastructure.Persistence.EFC.Repositories;
+
+namespace CargoExpress.IntegrationTests;
+
+public class EntrepreneurIntegrationTests : IntegrationTestBase
+{
+    [Fact]
+    public async Task CreateEntrepreneur_WithValidData_ShouldSucceed()
+    {
+        var dbContext = CreateDbContext();
+        var entrepreneurRepository = new EntrepreneurRepository(dbContext);
+        var unitOfWork = new UnitOfWork(dbContext);
+
+        var entrepreneur = new Entrepreneur
+        {
+            Name = "Transportes SAC",
+            Phone = "987654321",
+            Ruc = "20123456789",
+            LogoImage = "logo.png"
+        };
+
+        await entrepreneurRepository.AddAsync(entrepreneur);
+        await unitOfWork.CompleteAsync();
+
+        var retrieved = await entrepreneurRepository.FindByIdAsync(entrepreneur.Id);
+        Assert.NotNull(retrieved);
+        Assert.Equal("Transportes SAC", retrieved.Name);
+        Assert.Equal("987654321", retrieved.Phone);
+        Assert.Equal("20123456789", retrieved.Ruc);
+
+        CleanupDatabase(dbContext);
+    }
+
+    [Fact]
+    public async Task GetAllEntrepreneurs_ShouldReturnMultipleEntrepreneurs()
+    {
+        var dbContext = CreateDbContext();
+        var entrepreneurRepository = new EntrepreneurRepository(dbContext);
+        var unitOfWork = new UnitOfWork(dbContext);
+
+        var entrepreneur1 = new Entrepreneur
+        {
+            Name = "Empresa Uno SAC",
+            Phone = "111111111",
+            Ruc = "20111111111",
+            LogoImage = "logo1.png"
+        };
+        var entrepreneur2 = new Entrepreneur
+        {
+            Name = "Empresa Dos SAC",
+            Phone = "222222222",
+            Ruc = "20222222222",
+            LogoImage = "logo2.png"
+        };
+
+        await entrepreneurRepository.AddAsync(entrepreneur1);
+        await entrepreneurRepository.AddAsync(entrepreneur2);
+        await unitOfWork.CompleteAsync();
+
+        var entrepreneurs = await entrepreneurRepository.ListAsync();
+
+        Assert.NotNull(entrepreneurs);
+        Assert.Equal(2, entrepreneurs.Count());
+        Assert.Contains(entrepreneurs, e => e.Name == "Empresa Uno SAC");
+        Assert.Contains(entrepreneurs, e => e.Name == "Empresa Dos SAC");
+
+        CleanupDatabase(dbContext);
+    }
+
+    [Fact]
+    public async Task UpdateEntrepreneur_ShouldSucceed()
+    {
+        var dbContext = CreateDbContext();
+        var entrepreneurRepository = new EntrepreneurRepository(dbContext);
+        var unitOfWork = new UnitOfWork(dbContext);
+
+        var entrepreneur = new Entrepreneur
+        {
+            Name = "Old Company",
+            Phone = "999999999",
+            Ruc = "20999999999",
+            LogoImage = "old_logo.png"
+        };
+
+        await entrepreneurRepository.AddAsync(entrepreneur);
+        await unitOfWork.CompleteAsync();
+
+        entrepreneur.Update(new UpdateEntrepreneurCommand(
+            entrepreneur.Id, "New Company", "888888888", "20888888888", entrepreneur.UserId, "new_logo.png"));
+        entrepreneurRepository.Update(entrepreneur);
+        await unitOfWork.CompleteAsync();
+
+        var updated = await entrepreneurRepository.FindByIdAsync(entrepreneur.Id);
+        Assert.NotNull(updated);
+        Assert.Equal("New Company", updated.Name);
+        Assert.Equal("20888888888", updated.Ruc);
+        Assert.Equal("new_logo.png", updated.LogoImage);
+
+        CleanupDatabase(dbContext);
+    }
+
+    [Fact]
+    public async Task FindEntrepreneurByUserId_ShouldReturnEntrepreneur()
+    {
+        var dbContext = CreateDbContext();
+        var entrepreneurRepository = new EntrepreneurRepository(dbContext);
+        var unitOfWork = new UnitOfWork(dbContext);
+
+        var entrepreneur = new Entrepreneur
+        {
+            Name = "Cargo Logistics SAC",
+            Phone = "945678123",
+            Ruc = "20567812345",
+            LogoImage = "cargo_logo.png"
+        };
+
+        await entrepreneurRepository.AddAsync(entrepreneur);
+        await unitOfWork.CompleteAsync();
+
+        var found = await entrepreneurRepository.FindByUserIdAsync(entrepreneur.UserId);
+
+        Assert.NotNull(found);
+        Assert.Equal("Cargo Logistics SAC", found.Name);
+
+        CleanupDatabase(dbContext);
+    }
+
+    [Fact]
+    public async Task GetEntrepreneurById_WithInvalidId_ShouldReturnNull()
+    {
+        var dbContext = CreateDbContext();
+        var entrepreneurRepository = new EntrepreneurRepository(dbContext);
+
+        var entrepreneur = await entrepreneurRepository.FindByIdAsync(999);
+
+        Assert.Null(entrepreneur);
+
+        CleanupDatabase(dbContext);
+    }
+}

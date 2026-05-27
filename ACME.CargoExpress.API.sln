@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACME.CargoExpress.API", "ACME.CargoExpress.API\ACME.CargoExpress.API.csproj", "{BA59478B-B59A-45A2-8E96-CFD73E1A7073}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CargoExpress.UnitTests", "CargoExpress.UnitTests\CargoExpress.UnitTests.csproj", "{891E7D0F-5899-4643-AD98-F8C4BBC8FC0C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CargoExpress.IntegrationTests", "CargoExpress.IntegrationTests\CargoExpress.IntegrationTests.csproj", "{C2A7F3E1-8B4D-4F6A-9E2C-1D5A8B3C7F90}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BA59478B-B59A-45A2-8E96-CFD73E1A7073}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA59478B-B59A-45A2-8E96-CFD73E1A7073}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA59478B-B59A-45A2-8E96-CFD73E1A7073}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA59478B-B59A-45A2-8E96-CFD73E1A7073}.Release|Any CPU.Build.0 = Release|Any CPU
+		{891E7D0F-5899-4643-AD98-F8C4BBC8FC0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{891E7D0F-5899-4643-AD98-F8C4BBC8FC0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{891E7D0F-5899-4643-AD98-F8C4BBC8FC0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{891E7D0F-5899-4643-AD98-F8C4BBC8FC0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2A7F3E1-8B4D-4F6A-9E2C-1D5A8B3C7F90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2A7F3E1-8B4D-4F6A-9E2C-1D5A8B3C7F90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2A7F3E1-8B4D-4F6A-9E2C-1D5A8B3C7F90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2A7F3E1-8B4D-4F6A-9E2C-1D5A8B3C7F90}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

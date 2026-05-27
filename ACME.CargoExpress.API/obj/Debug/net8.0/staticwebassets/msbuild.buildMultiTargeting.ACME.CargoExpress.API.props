@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\ACME.CargoExpress.API.props" />
+</Project>

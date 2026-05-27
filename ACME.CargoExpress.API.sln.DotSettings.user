@@ -1,0 +1,24 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=a935f6b9_002D5fe7_002D4df8_002D8b40_002D3c70bb2d458a/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from ClientUnitTest.cs" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;Or&gt;&#xD;
+    &lt;ProjectFile&gt;891E7D0F-5899-4643-AD98-F8C4BBC8FC0C/f:ClientUnitTest.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;891E7D0F-5899-4643-AD98-F8C4BBC8FC0C/f:AlertUnitTest.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;891E7D0F-5899-4643-AD98-F8C4BBC8FC0C/f:ConfigurationUnitTest.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;891E7D0F-5899-4643-AD98-F8C4BBC8FC0C/f:DriverUnitTest.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;891E7D0F-5899-4643-AD98-F8C4BBC8FC0C/f:EntrepreneurUnitTest.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;891E7D0F-5899-4643-AD98-F8C4BBC8FC0C/f:EvidenceUnitTest.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;891E7D0F-5899-4643-AD98-F8C4BBC8FC0C/f:ExpenseUnitTest.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;891E7D0F-5899-4643-AD98-F8C4BBC8FC0C/f:OngoingTripUnitTest.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;891E7D0F-5899-4643-AD98-F8C4BBC8FC0C/f:TripUnitTest.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;891E7D0F-5899-4643-AD98-F8C4BBC8FC0C/f:UserUnitTest.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;891E7D0F-5899-4643-AD98-F8C4BBC8FC0C/f:VehicleUnitTest.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;6D341A92-2830-4650-8E92-07DF941B8C4D/f:ClientIntegrationTests.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;6D341A92-2830-4650-8E92-07DF941B8C4D/f:DriverIntegrationTests.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;6D341A92-2830-4650-8E92-07DF941B8C4D/f:EntrepreneurIntegrationTests.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;6D341A92-2830-4650-8E92-07DF941B8C4D/f:ExpenseIntegrationTests.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;6D341A92-2830-4650-8E92-07DF941B8C4D/f:IntegrationTestBase.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;6D341A92-2830-4650-8E92-07DF941B8C4D/f:TripIntegrationTests.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;6D341A92-2830-4650-8E92-07DF941B8C4D/f:UserIntegrationTests.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;6D341A92-2830-4650-8E92-07DF941B8C4D/f:VehicleIntegrationTests.cs&lt;/ProjectFile&gt;&#xD;
+  &lt;/Or&gt;&#xD;
+&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
