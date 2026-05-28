@@ -24,6 +24,10 @@ public class User(string username, string passwordHash)
 
     [JsonIgnore] public string PasswordHash { get; private set; } = passwordHash;
 
+    public DateTime CreatedAt { get; private set; } = TimeZoneInfo.ConvertTimeFromUtc(
+        DateTime.UtcNow,
+        TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time"));
+
     /**
      * <summary>
      *     Update the username
