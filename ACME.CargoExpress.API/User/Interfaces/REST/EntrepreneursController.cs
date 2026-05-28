@@ -1,6 +1,7 @@
-﻿using ACME.CargoExpress.API.Registration.Domain.Model.Queries;
+using ACME.CargoExpress.API.Registration.Domain.Model.Queries;
 using ACME.CargoExpress.API.Registration.Domain.Services;
 using ACME.CargoExpress.API.Registration.Interfaces.REST.Transform;
+using ACME.CargoExpress.API.User.Domain.Exceptions;
 using ACME.CargoExpress.API.User.Domain.Model.Queries;
 using ACME.CargoExpress.API.User.Domain.Services;
 using ACME.CargoExpress.API.User.Interfaces.REST.Resources;
@@ -11,7 +12,9 @@ namespace ACME.CargoExpress.API.User.Interfaces.REST;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-public class EntrepreneursController (IEntrepreneurQueryService entrepreneurQueryService, IEntrepreneurCommandService entrepreneurCommandService,
+public class EntrepreneursController(
+    IEntrepreneurQueryService entrepreneurQueryService,
+    IEntrepreneurCommandService entrepreneurCommandService,
     ITripQueryService tripQueryService) : ControllerBase
 {
     [HttpPost]
@@ -21,24 +24,41 @@ public class EntrepreneursController (IEntrepreneurQueryService entrepreneurQuer
         {
             var createEntrepreneurCommand = CreateEntrepreneurCommandFromResourceAssembler.ToCommandFromResource(createEntrepreneurResource);
             var entrepreneur = await entrepreneurCommandService.Handle(createEntrepreneurCommand);
-            if (entrepreneur is null) return BadRequest();
+            if (entrepreneur is null)
+                return BadRequest(new { message = "No se pudo crear el emprendedor." });
             var resource = EntrepreneurResourceFromEntityAssembler.ToResourceFromEntity(entrepreneur);
             return CreatedAtAction(nameof(GetEntrepreneurById), new { entrepreneurId = resource.Id }, resource);
         }
-        catch (Exception e)
+        catch (InvalidEntrepreneurNameException e)
         {
-            var exceptionDetails = new
-            {
-                e.Message,
-                e.StackTrace,
-                InnerExceptionMessage = e.InnerException?.Message,
-                InnerExceptionStackTrace = e.InnerException?.StackTrace
-            };
-            Console.WriteLine(exceptionDetails);
-            return BadRequest(new { message = "An error occurred while creating the entrepreneur.", details = exceptionDetails });
+            return BadRequest(new { message = e.Message });
+        }
+        catch (InvalidEntrepreneurPhoneException e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+        catch (InvalidEntrepreneurRucException e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+        catch (DuplicateEntrepreneurNameException e)
+        {
+            return Conflict(new { message = e.Message });
+        }
+        catch (DuplicateEntrepreneurPhoneException e)
+        {
+            return Conflict(new { message = e.Message });
+        }
+        catch (DuplicateEntrepreneurRucException e)
+        {
+            return Conflict(new { message = e.Message });
+        }
+        catch (UserNotFoundException e)
+        {
+            return NotFound(new { message = e.Message });
         }
     }
-    
+
     [HttpGet]
     public async Task<IActionResult> GetAllEntrepreneurs()
     {
@@ -47,16 +67,16 @@ public class EntrepreneursController (IEntrepreneurQueryService entrepreneurQuer
         var resources = entrepreneurs.Select(EntrepreneurResourceFromEntityAssembler.ToResourceFromEntity);
         return Ok(resources);
     }
-    
+
     [HttpGet("{entrepreneurId}")]
     public async Task<IActionResult> GetEntrepreneurById([FromRoute] int entrepreneurId)
     {
         var entrepreneur = await entrepreneurQueryService.Handle(new GetEntrepreneurByIdQuery(entrepreneurId));
-        if (entrepreneur == null) return NotFound();
+        if (entrepreneur == null) return NotFound(new { message = $"No se encontró un emprendedor con el id '{entrepreneurId}'." });
         var resource = EntrepreneurResourceFromEntityAssembler.ToResourceFromEntity(entrepreneur);
         return Ok(resource);
     }
-    
+
     [HttpPut("{entrepreneurId}")]
     public async Task<IActionResult> UpdateEntrepreneur([FromBody] UpdateEntrepreneurResource updateEntrepreneurResource, [FromRoute] int entrepreneurId)
     {
@@ -64,21 +84,38 @@ public class EntrepreneursController (IEntrepreneurQueryService entrepreneurQuer
         {
             var updateEntrepreneurCommand = UpdateEntrepreneurCommandFromResourceAssembler.ToCommandFromResource(updateEntrepreneurResource, entrepreneurId);
             var entrepreneur = await entrepreneurCommandService.Handle(updateEntrepreneurCommand);
-            if (entrepreneur is null) return BadRequest();
+            if (entrepreneur is null)
+                return BadRequest(new { message = "No se pudo actualizar el emprendedor." });
             var resource = EntrepreneurResourceFromEntityAssembler.ToResourceFromEntity(entrepreneur);
             return Ok(resource);
         }
-        catch (Exception e)
+        catch (InvalidEntrepreneurNameException e)
         {
-            var exceptionDetails = new
-            {
-                e.Message,
-                e.StackTrace,
-                InnerExceptionMessage = e.InnerException?.Message,
-                InnerExceptionStackTrace = e.InnerException?.StackTrace
-            };
-            Console.WriteLine(exceptionDetails);
-            return BadRequest(new { message = "An error occurred while updating the entrepreneur.", details = exceptionDetails });
+            return BadRequest(new { message = e.Message });
+        }
+        catch (InvalidEntrepreneurPhoneException e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+        catch (InvalidEntrepreneurRucException e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+        catch (DuplicateEntrepreneurNameException e)
+        {
+            return Conflict(new { message = e.Message });
+        }
+        catch (DuplicateEntrepreneurPhoneException e)
+        {
+            return Conflict(new { message = e.Message });
+        }
+        catch (DuplicateEntrepreneurRucException e)
+        {
+            return Conflict(new { message = e.Message });
+        }
+        catch (EntrepreneurNotFoundException e)
+        {
+            return NotFound(new { message = e.Message });
         }
     }
 
@@ -90,7 +127,7 @@ public class EntrepreneursController (IEntrepreneurQueryService entrepreneurQuer
         var resources = trips.Select(TripResourceFromEntityAssembler.ToResourceFromEntity);
         return Ok(resources);
     }
-    
+
     [HttpGet("{entrepreneurId}/clients")]
     public async Task<IActionResult> GetClientsByEntrepreneurId([FromRoute] int entrepreneurId)
     {

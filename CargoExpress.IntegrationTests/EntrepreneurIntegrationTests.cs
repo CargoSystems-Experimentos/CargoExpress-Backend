@@ -18,8 +18,7 @@ public class EntrepreneurIntegrationTests : IntegrationTestBase
         {
             Name = "Transportes SAC",
             Phone = "987654321",
-            Ruc = "20123456789",
-            LogoImage = "logo.png"
+            Ruc = "20123456789"
         };
 
         await entrepreneurRepository.AddAsync(entrepreneur);
@@ -45,15 +44,13 @@ public class EntrepreneurIntegrationTests : IntegrationTestBase
         {
             Name = "Empresa Uno SAC",
             Phone = "111111111",
-            Ruc = "20111111111",
-            LogoImage = "logo1.png"
+            Ruc = "20111111111"
         };
         var entrepreneur2 = new Entrepreneur
         {
             Name = "Empresa Dos SAC",
             Phone = "222222222",
-            Ruc = "20222222222",
-            LogoImage = "logo2.png"
+            Ruc = "20222222222"
         };
 
         await entrepreneurRepository.AddAsync(entrepreneur1);
@@ -81,23 +78,21 @@ public class EntrepreneurIntegrationTests : IntegrationTestBase
         {
             Name = "Old Company",
             Phone = "999999999",
-            Ruc = "20999999999",
-            LogoImage = "old_logo.png"
+            Ruc = "20999999999"
         };
 
         await entrepreneurRepository.AddAsync(entrepreneur);
         await unitOfWork.CompleteAsync();
 
         entrepreneur.Update(new UpdateEntrepreneurCommand(
-            entrepreneur.Id, "New Company", "888888888", "20888888888", entrepreneur.UserId, "new_logo.png"));
+            entrepreneur.Id, "New Company SAC", "888888888", "20888888888", entrepreneur.UserId));
         entrepreneurRepository.Update(entrepreneur);
         await unitOfWork.CompleteAsync();
 
         var updated = await entrepreneurRepository.FindByIdAsync(entrepreneur.Id);
         Assert.NotNull(updated);
-        Assert.Equal("New Company", updated.Name);
+        Assert.Equal("New Company SAC", updated.Name);
         Assert.Equal("20888888888", updated.Ruc);
-        Assert.Equal("new_logo.png", updated.LogoImage);
 
         CleanupDatabase(dbContext);
     }
@@ -113,8 +108,7 @@ public class EntrepreneurIntegrationTests : IntegrationTestBase
         {
             Name = "Cargo Logistics SAC",
             Phone = "945678123",
-            Ruc = "20567812345",
-            LogoImage = "cargo_logo.png"
+            Ruc = "20567812345"
         };
 
         await entrepreneurRepository.AddAsync(entrepreneur);

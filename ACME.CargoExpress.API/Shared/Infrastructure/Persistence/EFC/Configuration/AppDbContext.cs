@@ -172,8 +172,13 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
         //Entrepreneur table
         builder.Entity<Entrepreneur>().HasKey(e => e.Id);
         builder.Entity<Entrepreneur>().Property(e => e.Id).IsRequired().ValueGeneratedOnAdd();
-        builder.Entity<Entrepreneur>().Property(e => e.LogoImage).IsRequired().HasColumnType("TEXT");
-        
+        builder.Entity<Entrepreneur>().Property(e => e.Name).IsRequired().HasMaxLength(60);
+        builder.Entity<Entrepreneur>().Property(e => e.Phone).IsRequired().HasMaxLength(9);
+        builder.Entity<Entrepreneur>().Property(e => e.Ruc).IsRequired().HasMaxLength(11);
+        builder.Entity<Entrepreneur>().HasIndex(e => e.Name).IsUnique();
+        builder.Entity<Entrepreneur>().HasIndex(e => e.Phone).IsUnique();
+        builder.Entity<Entrepreneur>().HasIndex(e => e.Ruc).IsUnique();
+
         //Entrepreneur table relationships
 
         builder.Entity<Entrepreneur>()
