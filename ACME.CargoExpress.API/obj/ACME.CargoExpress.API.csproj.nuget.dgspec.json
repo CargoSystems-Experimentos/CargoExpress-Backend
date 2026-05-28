@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Adolfo PC\\Downloads\\CargoExpress-Web-Services\\ACME.CargoExpress.API\\ACME.CargoExpress.API.csproj": {}
+    "C:\\Users\\Adolfo PC\\Documents\\GitHub\\CargoExpress-Backend\\ACME.CargoExpress.API\\ACME.CargoExpress.API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Adolfo PC\\Downloads\\CargoExpress-Web-Services\\ACME.CargoExpress.API\\ACME.CargoExpress.API.csproj": {
+    "C:\\Users\\Adolfo PC\\Documents\\GitHub\\CargoExpress-Backend\\ACME.CargoExpress.API\\ACME.CargoExpress.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Adolfo PC\\Downloads\\CargoExpress-Web-Services\\ACME.CargoExpress.API\\ACME.CargoExpress.API.csproj",
+        "projectUniqueName": "C:\\Users\\Adolfo PC\\Documents\\GitHub\\CargoExpress-Backend\\ACME.CargoExpress.API\\ACME.CargoExpress.API.csproj",
         "projectName": "ACME.CargoExpress.API",
-        "projectPath": "C:\\Users\\Adolfo PC\\Downloads\\CargoExpress-Web-Services\\ACME.CargoExpress.API\\ACME.CargoExpress.API.csproj",
+        "projectPath": "C:\\Users\\Adolfo PC\\Documents\\GitHub\\CargoExpress-Backend\\ACME.CargoExpress.API\\ACME.CargoExpress.API.csproj",
         "packagesPath": "C:\\Users\\Adolfo PC\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Adolfo PC\\Downloads\\CargoExpress-Web-Services\\ACME.CargoExpress.API\\obj\\",
+        "outputPath": "C:\\Users\\Adolfo PC\\Documents\\GitHub\\CargoExpress-Backend\\ACME.CargoExpress.API\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Adolfo PC\\AppData\\Roaming\\NuGet\\NuGet.Config"

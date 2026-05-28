@@ -1,4 +1,6 @@
+using System.Text.RegularExpressions;
 using ACME.CargoExpress.API.IAM.Application.Internal.OutboundServices;
+using ACME.CargoExpress.API.IAM.Domain.Exceptions;
 using ACME.CargoExpress.API.IAM.Domain.Model.Commands;
 using ACME.CargoExpress.API.IAM.Domain.Repositories;
 using ACME.CargoExpress.API.IAM.Domain.Services;
@@ -21,6 +23,10 @@ public class UserCommandService(
     IUnitOfWork unitOfWork)
     : IUserCommandService
 {
+    private static readonly Regex EmailRegex = new(
+        @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
+        RegexOptions.Compiled | RegexOptions.CultureInvariant);
+
     /**
      * <summary>
      *     Handle sign in command
@@ -49,19 +55,16 @@ public class UserCommandService(
      */
     public async Task Handle(SignUpCommand command)
     {
+        if (string.IsNullOrWhiteSpace(command.Username) || !EmailRegex.IsMatch(command.Username))
+            throw new InvalidUsernameException(command.Username);
+
         if (userRepository.ExistsByUsername(command.Username))
-            throw new Exception("Username already exists.");
+            throw new DuplicateUsernameException(command.Username);
 
         var hashedPassword = hashingService.HashPassword(command.Password);
         var user = new Domain.Model.Aggregates.User(command.Username, hashedPassword);
-        try
-        {
-            await userRepository.AddAsync(user);
-            await unitOfWork.CompleteAsync();
-        }
-        catch (Exception e)
-        {
-            throw new Exception($"An error occurred while creating user: {e.Message}");
-        }
+
+        await userRepository.AddAsync(user);
+        await unitOfWork.CompleteAsync();
     }
 }

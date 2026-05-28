@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "rsPUxSdTZUQ=",
+  "dgSpecHash": "Y+RLb424CWs=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Adolfo PC\\Downloads\\CargoExpress-Web-Services\\CargoExpress.IntegrationTests\\CargoExpress.IntegrationTests.csproj",
+  "projectFilePath": "C:\\Users\\Adolfo PC\\Documents\\GitHub\\CargoExpress-Backend\\CargoExpress.IntegrationTests\\CargoExpress.IntegrationTests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Adolfo PC\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\Adolfo PC\\.nuget\\packages\\bodi\\1.5.0\\bodi.1.5.0.nupkg.sha512",

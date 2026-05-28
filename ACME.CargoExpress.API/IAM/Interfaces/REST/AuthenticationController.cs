@@ -1,4 +1,5 @@
 using System.Net.Mime;
+using ACME.CargoExpress.API.IAM.Domain.Exceptions;
 using ACME.CargoExpress.API.IAM.Domain.Services;
 using ACME.CargoExpress.API.IAM.Infrastructure.Pipeline.Middleware.Attributes;
 using ACME.CargoExpress.API.IAM.Interfaces.REST.Resources;
@@ -43,15 +44,19 @@ public class AuthenticationController(IUserCommandService userCommandService) : 
     [AllowAnonymous]
     public async Task<IActionResult> SignUp([FromBody] SignUpResource signUpResource)
     {
+        var signUpCommand = SignUpCommandFromResourceAssembler.ToCommandFromResource(signUpResource);
         try
         {
-            var signUpCommand = SignUpCommandFromResourceAssembler.ToCommandFromResource(signUpResource);
             await userCommandService.Handle(signUpCommand);
             return Ok(new { message = "User created successfully" });
         }
-        catch (Exception e)
+        catch (InvalidUsernameException e)
         {
             return BadRequest(new { message = e.Message });
+        }
+        catch (DuplicateUsernameException e)
+        {
+            return Conflict(new { message = e.Message });
         }
     }
 }

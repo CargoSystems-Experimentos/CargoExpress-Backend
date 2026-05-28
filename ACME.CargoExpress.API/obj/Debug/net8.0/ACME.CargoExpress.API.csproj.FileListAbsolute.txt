@@ -20,11 +20,6 @@ C:\Users\Adolfo PC\Documents\GitHub\CargoExpress-Backend\ACME.CargoExpress.API\o
 C:\Users\Adolfo PC\Documents\GitHub\CargoExpress-Backend\ACME.CargoExpress.API\obj\Debug\net8.0\ACME.CargoExpress.API.sourcelink.json
 C:\Users\Adolfo PC\Documents\GitHub\CargoExpress-Backend\ACME.CargoExpress.API\obj\Debug\net8.0\staticwebassets.build.json
 C:\Users\Adolfo PC\Documents\GitHub\CargoExpress-Backend\ACME.CargoExpress.API\obj\Debug\net8.0\staticwebassets.development.json
-C:\Users\Adolfo PC\Documents\GitHub\CargoExpress-Backend\ACME.CargoExpress.API\obj\Debug\net8.0\staticwebassets\msbuild.ACME.CargoExpress.API.Microsoft.AspNetCore.StaticWebAssets.props
-C:\Users\Adolfo PC\Documents\GitHub\CargoExpress-Backend\ACME.CargoExpress.API\obj\Debug\net8.0\staticwebassets\msbuild.build.ACME.CargoExpress.API.props
-C:\Users\Adolfo PC\Documents\GitHub\CargoExpress-Backend\ACME.CargoExpress.API\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.ACME.CargoExpress.API.props
-C:\Users\Adolfo PC\Documents\GitHub\CargoExpress-Backend\ACME.CargoExpress.API\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.ACME.CargoExpress.API.props
-C:\Users\Adolfo PC\Documents\GitHub\CargoExpress-Backend\ACME.CargoExpress.API\obj\Debug\net8.0\staticwebassets.pack.json
 C:\Users\Adolfo PC\Documents\GitHub\CargoExpress-Backend\ACME.CargoExpress.API\obj\Debug\net8.0\scopedcss\bundle\ACME.CargoExpress.API.styles.css
 C:\Users\Adolfo PC\Documents\GitHub\CargoExpress-Backend\ACME.CargoExpress.API\obj\Debug\net8.0\ACME.Car.5BC12202.Up2Date
 C:\Users\Adolfo PC\Documents\GitHub\CargoExpress-Backend\ACME.CargoExpress.API\obj\Debug\net8.0\ACME.CargoExpress.API.dll
@@ -885,3 +880,10 @@ C:\Users\Adolfo PC\Downloads\CargoExpress-Web-Services\ACME.CargoExpress.API\obj
 C:\Users\Adolfo PC\Downloads\CargoExpress-Web-Services\ACME.CargoExpress.API\obj\Debug\net8.0\ACME.CargoExpress.API.pdb
 C:\Users\Adolfo PC\Downloads\CargoExpress-Web-Services\ACME.CargoExpress.API\obj\Debug\net8.0\ACME.CargoExpress.API.genruntimeconfig.cache
 C:\Users\Adolfo PC\Downloads\CargoExpress-Web-Services\ACME.CargoExpress.API\obj\Debug\net8.0\ref\ACME.CargoExpress.API.dll
+C:\Users\Adolfo PC\Documents\GitHub\CargoExpress-Backend\ACME.CargoExpress.API\bin\Debug\net8.0\ACME.CargoExpress.API.staticwebassets.endpoints.json
+C:\Users\Adolfo PC\Documents\GitHub\CargoExpress-Backend\ACME.CargoExpress.API\obj\Debug\net8.0\rpswa.dswa.cache.json
+C:\Users\Adolfo PC\Documents\GitHub\CargoExpress-Backend\ACME.CargoExpress.API\obj\Debug\net8.0\rjimswa.dswa.cache.json
+C:\Users\Adolfo PC\Documents\GitHub\CargoExpress-Backend\ACME.CargoExpress.API\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+C:\Users\Adolfo PC\Documents\GitHub\CargoExpress-Backend\ACME.CargoExpress.API\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+C:\Users\Adolfo PC\Documents\GitHub\CargoExpress-Backend\ACME.CargoExpress.API\obj\Debug\net8.0\staticwebassets.build.json.cache
+C:\Users\Adolfo PC\Documents\GitHub\CargoExpress-Backend\ACME.CargoExpress.API\obj\Debug\net8.0\staticwebassets.build.endpoints.json

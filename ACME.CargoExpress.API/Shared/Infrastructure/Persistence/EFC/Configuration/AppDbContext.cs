@@ -151,7 +151,8 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
         builder.Entity<IAM.Domain.Model.Aggregates.User>().HasKey(u => u.Id);
         builder.Entity<IAM.Domain.Model.Aggregates.User>().Property(u => u.Id).IsRequired().ValueGeneratedOnAdd();
         builder.Entity<IAM.Domain.Model.Aggregates.User>().Property(u => u.Username).IsRequired();
-        builder.Entity<IAM.Domain.Model.Aggregates.User>().Property(u => u.PasswordHash).IsRequired(); 
+        builder.Entity<IAM.Domain.Model.Aggregates.User>().HasIndex(u => u.Username).IsUnique();
+        builder.Entity<IAM.Domain.Model.Aggregates.User>().Property(u => u.PasswordHash).IsRequired();
 
         //User Bounded Context
         
