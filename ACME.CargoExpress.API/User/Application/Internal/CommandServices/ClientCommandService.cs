@@ -1,102 +1,91 @@
-﻿using ACME.CargoExpress.API.IAM.Domain.Repositories;
+using ACME.CargoExpress.API.IAM.Domain.Repositories;
 using ACME.CargoExpress.API.Shared.Domain.Repositories;
+using ACME.CargoExpress.API.User.Domain.Exceptions;
 using ACME.CargoExpress.API.User.Domain.Model.Aggregates;
 using ACME.CargoExpress.API.User.Domain.Model.Commands;
-using ACME.CargoExpress.API.User.Domain.Model.Entities;
 using ACME.CargoExpress.API.User.Domain.Repositories;
 using ACME.CargoExpress.API.User.Domain.Services;
 
 namespace ACME.CargoExpress.API.User.Application.Internal.CommandServices;
 
-public class ClientCommandService(IClientRepository clientRepository, IUserRepository userRepository, IUnitOfWork unitOfWork) : IClientCommandService
+public class ClientCommandService(
+    IClientRepository clientRepository,
+    IUserRepository userRepository,
+    IUnitOfWork unitOfWork) : IClientCommandService
 {
     public async Task<Client?> Handle(CreateClientCommand command)
     {
-        // Validaciones
-        if (string.IsNullOrWhiteSpace(command.Phone) || command.Phone.Length != 9)
-        {
-            throw new ArgumentException("Phone must have exactly 9 characters.");
-        }
-        
-        if (string.IsNullOrWhiteSpace(command.Dni) || command.Dni.Length != 8)
-        {
-            throw new ArgumentException("Dni must have exactly 8 characters.");
-        }
-        
-        var existingClientByDni = await clientRepository.FindByDniAsync(command.Dni);
-        if (existingClientByDni != null)
-        {
-            throw new ArgumentException("Client DNI is already registered.");
-        }
+        ValidateName(command.Name);
+        ValidatePhone(command.Phone);
+        ValidateDni(command.Dni);
 
-        var existingClientByPhone = await clientRepository.FindByPhoneAsync(command.Phone);
-        if (existingClientByPhone != null)
-        {
-            throw new ArgumentException("Client phone number is already registered.");
-        }
+        if (await clientRepository.FindByPhoneAsync(command.Phone) is not null)
+            throw new DuplicateClientPhoneException(command.Phone);
 
-        var user = await userRepository.FindByIdAsync(command.UserId);
-        if (user == null)
-        {
-            throw new ArgumentException("UserId not found.");
-        }
-        // Create the client
+        if (await clientRepository.FindByDniAsync(command.Dni) is not null)
+            throw new DuplicateClientDniException(command.Dni);
+
+        var user = await userRepository.FindByIdAsync(command.UserId)
+                   ?? throw new UserNotFoundException(command.UserId);
+
         var client = new Client(command, user);
-        try
-        {
-            await clientRepository.AddAsync(client);
-            await unitOfWork.CompleteAsync();
-            return client;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine($"An error occurred while creating the client: {e.Message}");
-            return null;
-        }
+        await clientRepository.AddAsync(client);
+        await unitOfWork.CompleteAsync();
+        return client;
     }
-    
+
     public async Task<Client?> Handle(UpdateClientCommand command)
     {
-        // Validaciones
-        if (string.IsNullOrWhiteSpace(command.Phone) || command.Phone.Length != 9)
-        {
-            throw new ArgumentException("Phone must have exactly 9 characters.");
-        }
-        
-        if (string.IsNullOrWhiteSpace(command.Dni) || command.Dni.Length != 8)
-        {
-            throw new ArgumentException("Dni must have exactly 8 characters.");
-        }
-        
-        var client = await clientRepository.FindByIdAsync(command.ClientId);
-        if (client == null)
-        {
-            throw new ArgumentException("Client not found.");
-        }
+        ValidateName(command.Name);
+        ValidatePhone(command.Phone);
+        ValidateDni(command.Dni);
 
-        var existingClientByDni = await clientRepository.FindByDniAsync(command.Dni);
-        if (existingClientByDni != null && existingClientByDni.Id != command.ClientId)
-        {
-            throw new ArgumentException("Client DNI is already registered.");
-        }
+        var client = await clientRepository.FindByIdAsync(command.ClientId)
+                     ?? throw new ClientNotFoundException(command.ClientId);
 
-        var existingClientByPhone = await clientRepository.FindByPhoneAsync(command.Phone);
-        if (existingClientByPhone != null && existingClientByPhone.Id != command.ClientId)
-        {
-            throw new ArgumentException("Client phone number is already registered.");
-        }
+        var existingByPhone = await clientRepository.FindByPhoneAsync(command.Phone);
+        if (existingByPhone is not null && existingByPhone.Id != command.ClientId)
+            throw new DuplicateClientPhoneException(command.Phone);
 
-        // Update the client
+        var existingByDni = await clientRepository.FindByDniAsync(command.Dni);
+        if (existingByDni is not null && existingByDni.Id != command.ClientId)
+            throw new DuplicateClientDniException(command.Dni);
+
         client.Update(command);
-        try
-        {
-            await unitOfWork.CompleteAsync();
-            return client;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine($"An error occurred while updating the client: {e.Message}");
-            return null;
-        }
+        await unitOfWork.CompleteAsync();
+        return client;
+    }
+
+    private static void ValidateName(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            throw new InvalidClientNameException("El nombre es obligatorio.");
+
+        if (name.Length < 8 || name.Length > 60)
+            throw new InvalidClientNameException("El nombre debe tener entre 8 y 60 caracteres.");
+    }
+
+    private static void ValidatePhone(string phone)
+    {
+        if (string.IsNullOrWhiteSpace(phone))
+            throw new InvalidClientPhoneException("El teléfono es obligatorio.");
+
+        if (phone.Length != 9)
+            throw new InvalidClientPhoneException("El teléfono debe tener exactamente 9 caracteres.");
+
+        if (!phone.All(char.IsDigit))
+            throw new InvalidClientPhoneException("El teléfono solo debe contener números.");
+    }
+
+    private static void ValidateDni(string dni)
+    {
+        if (string.IsNullOrWhiteSpace(dni))
+            throw new InvalidClientDniException("El DNI es obligatorio.");
+
+        if (dni.Length != 8)
+            throw new InvalidClientDniException("El DNI debe tener exactamente 8 caracteres.");
+
+        if (!dni.All(char.IsDigit))
+            throw new InvalidClientDniException("El DNI solo debe contener números.");
     }
 }

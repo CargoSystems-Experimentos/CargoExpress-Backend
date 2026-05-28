@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ACME.CargoExpress.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e3a656058442094d44306e95b273e99aa622a7a9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a1cb52bb43e16e6845730cb0be1ee3ac1c820c5c")]
 [assembly: System.Reflection.AssemblyProductAttribute("ACME.CargoExpress.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ACME.CargoExpress.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
