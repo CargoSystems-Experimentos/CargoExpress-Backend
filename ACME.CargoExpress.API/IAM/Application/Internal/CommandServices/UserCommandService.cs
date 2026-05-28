@@ -58,6 +58,8 @@ public class UserCommandService(
         if (string.IsNullOrWhiteSpace(command.Username) || !EmailRegex.IsMatch(command.Username))
             throw new InvalidUsernameException(command.Username);
 
+        ValidatePassword(command.Password);
+
         if (userRepository.ExistsByUsername(command.Username))
             throw new DuplicateUsernameException(command.Username);
 
@@ -66,5 +68,20 @@ public class UserCommandService(
 
         await userRepository.AddAsync(user);
         await unitOfWork.CompleteAsync();
+    }
+
+    private static void ValidatePassword(string password)
+    {
+        if (string.IsNullOrEmpty(password) || password.Length < 8)
+            throw new InvalidPasswordException("La contraseña debe tener al menos 8 caracteres.");
+
+        if (!password.Any(char.IsUpper))
+            throw new InvalidPasswordException("La contraseña debe contener al menos una letra mayúscula.");
+
+        if (!password.Any(char.IsDigit))
+            throw new InvalidPasswordException("La contraseña debe contener al menos un número.");
+
+        if (!password.Any(c => !char.IsLetterOrDigit(c)))
+            throw new InvalidPasswordException("La contraseña debe contener al menos un carácter especial.");
     }
 }

@@ -54,6 +54,10 @@ public class AuthenticationController(IUserCommandService userCommandService) : 
         {
             return BadRequest(new { message = e.Message });
         }
+        catch (InvalidPasswordException e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
         catch (DuplicateUsernameException e)
         {
             return Conflict(new { message = e.Message });
