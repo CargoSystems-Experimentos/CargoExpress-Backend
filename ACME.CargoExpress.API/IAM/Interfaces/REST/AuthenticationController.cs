@@ -27,11 +27,24 @@ public class AuthenticationController(IUserCommandService userCommandService) : 
     public async Task<IActionResult> SignIn([FromBody] SignInResource signInResource)
     {
         var signInCommand = SignInCommandFromResourceAssembler.ToCommandFromResource(signInResource);
-        var authenticatedUser = await userCommandService.Handle(signInCommand);
-        var resource =
-            AuthenticatedUserResourceFromEntityAssembler.ToResourceFromEntity(authenticatedUser.user,
-                authenticatedUser.token);
-        return Ok(resource);
+        try
+        {
+            var authenticatedUser = await userCommandService.Handle(signInCommand);
+            var resource =
+                AuthenticatedUserResourceFromEntityAssembler.ToResourceFromEntity(authenticatedUser.user,
+                    authenticatedUser.token);
+            return Ok(resource);
+        }
+        // Missing credentials (400 Bad Request)
+        catch (MissingCredentialsException e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+        // Wrong email or password (401 Unauthorized) — generic message, no detail leaked
+        catch (InvalidCredentialsException e)
+        {
+            return Unauthorized(new { message = e.Message });
+        }
     }
 
     /**

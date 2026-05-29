@@ -41,10 +41,14 @@ public class UserCommandService(
      */
     public async Task<(Domain.Model.Aggregates.User user, string token)> Handle(SignInCommand command)
     {
+        if (string.IsNullOrWhiteSpace(command.Username) || string.IsNullOrWhiteSpace(command.Password))
+            throw new MissingCredentialsException();
+
         var user = await userRepository.FindByUsernameAsync(command.Username);
 
+        // Use a single generic message so we never reveal whether the email exists.
         if (user == null || !hashingService.VerifyPassword(command.Password, user.PasswordHash))
-            throw new Exception("Usuario o contraseña inválidos.");
+            throw new InvalidCredentialsException();
 
         var token = tokenService.GenerateToken(user);
 
