@@ -36,6 +36,7 @@ public class ClientsController(
     }
 
     [HttpPut("{clientId}")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public async Task<IActionResult> UpdateClient([FromBody] UpdateClientResource updateClientResource, [FromRoute] int clientId)
     {
         try

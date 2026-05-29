@@ -35,7 +35,9 @@ public class EntrepreneursController(
         return Ok(resource);
     }
 
+    
     [HttpPut("{entrepreneurId}")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public async Task<IActionResult> UpdateEntrepreneur([FromBody] UpdateEntrepreneurResource updateEntrepreneurResource, [FromRoute] int entrepreneurId)
     {
         try
