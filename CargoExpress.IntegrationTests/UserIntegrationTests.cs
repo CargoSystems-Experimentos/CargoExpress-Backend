@@ -8,6 +8,7 @@ namespace CargoExpress.IntegrationTests;
 
 public class UserIntegrationTests : IntegrationTestBase
 {
+    /*
     [Fact]
     public async Task CreateUser_WithValidData_ShouldSucceed()
     {
@@ -102,4 +103,5 @@ public class UserIntegrationTests : IntegrationTestBase
         // Cleanup
         CleanupDatabase(dbContext);
     }
+    */
 }

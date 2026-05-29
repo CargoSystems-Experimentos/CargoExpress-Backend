@@ -2,9 +2,12 @@ using System.Text.RegularExpressions;
 using ACME.CargoExpress.API.IAM.Application.Internal.OutboundServices;
 using ACME.CargoExpress.API.IAM.Domain.Exceptions;
 using ACME.CargoExpress.API.IAM.Domain.Model.Commands;
+using ACME.CargoExpress.API.IAM.Domain.Model.ValueObjects;
 using ACME.CargoExpress.API.IAM.Domain.Repositories;
 using ACME.CargoExpress.API.IAM.Domain.Services;
 using ACME.CargoExpress.API.Shared.Domain.Repositories;
+using ACME.CargoExpress.API.User.Domain.Model.Commands;
+using ACME.CargoExpress.API.User.Domain.Services;
 
 namespace ACME.CargoExpress.API.IAM.Application.Internal.CommandServices;
 
@@ -20,6 +23,8 @@ public class UserCommandService(
     IUserRepository userRepository,
     ITokenService tokenService,
     IHashingService hashingService,
+    IClientCommandService clientCommandService,
+    IEntrepreneurCommandService entrepreneurCommandService,
     IUnitOfWork unitOfWork)
     : IUserCommandService
 {
@@ -39,7 +44,7 @@ public class UserCommandService(
         var user = await userRepository.FindByUsernameAsync(command.Username);
 
         if (user == null || !hashingService.VerifyPassword(command.Password, user.PasswordHash))
-            throw new Exception("Invalid username or password");
+            throw new Exception("Usuario o contraseña inválidos.");
 
         var token = tokenService.GenerateToken(user);
 
@@ -55,19 +60,81 @@ public class UserCommandService(
      */
     public async Task Handle(SignUpCommand command)
     {
+        if (string.IsNullOrWhiteSpace(command.Role) || !Enum.IsDefined(typeof(ERole), command.Role))
+            throw new InvalidRoleException(command.Role ?? string.Empty);
+
+        var role = Enum.Parse<ERole>(command.Role);
+        ValidateProfile(role, command);
+
         if (string.IsNullOrWhiteSpace(command.Username) || !EmailRegex.IsMatch(command.Username))
             throw new InvalidUsernameException(command.Username);
 
         ValidatePassword(command.Password);
+        ValidatePhone(command.Phone);
 
         if (userRepository.ExistsByUsername(command.Username))
             throw new DuplicateUsernameException(command.Username);
 
+        if (await userRepository.FindByPhoneAsync(command.Phone) is not null)
+            throw new DuplicateUserPhoneException(command.Phone);
+
         var hashedPassword = hashingService.HashPassword(command.Password);
-        var user = new Domain.Model.Aggregates.User(command.Username, hashedPassword);
+        var user = new Domain.Model.Aggregates.User(command.Username, hashedPassword, command.Phone);
 
         await userRepository.AddAsync(user);
         await unitOfWork.CompleteAsync();
+
+        // Create the role-specific profile. If it fails validation, roll back the user
+        // so we never leave an account without a profile.
+        try
+        {
+            switch (role)
+            {
+                case ERole.CLIENT:
+                    await clientCommandService.Handle(
+                        new CreateClientCommand(command.Name, command.Dni ?? string.Empty, user.Id));
+                    break;
+                case ERole.ENTREPRENEUR:
+                    await entrepreneurCommandService.Handle(
+                        new CreateEntrepreneurCommand(command.Name, command.Ruc ?? string.Empty, user.Id));
+                    break;
+                default:
+                    throw new InvalidRoleException(command.Role);
+            }
+        }
+        catch
+        {
+            userRepository.Remove(user);
+            await unitOfWork.CompleteAsync();
+            throw;
+        }
+    }
+
+    private static void ValidateProfile(ERole role, SignUpCommand command)
+    {
+        switch (role)
+        {
+            // A Client must register only name and DNI; a RUC is not allowed.
+            case ERole.CLIENT when !string.IsNullOrWhiteSpace(command.Ruc):
+                throw new InvalidProfileException(
+                    "Un cliente solo debe registrar nombre y DNI; no debe incluir RUC.");
+            // An Entrepreneur must register only name and RUC; a DNI is not allowed.
+            case ERole.ENTREPRENEUR when !string.IsNullOrWhiteSpace(command.Dni):
+                throw new InvalidProfileException(
+                    "Un emprendedor solo debe registrar nombre y RUC; no debe incluir DNI.");
+        }
+    }
+
+    private static void ValidatePhone(string phone)
+    {
+        if (string.IsNullOrWhiteSpace(phone))
+            throw new InvalidUserPhoneException("El teléfono es obligatorio.");
+
+        if (phone.Length != 9)
+            throw new InvalidUserPhoneException("El teléfono debe tener exactamente 9 caracteres.");
+
+        if (!phone.All(char.IsDigit))
+            throw new InvalidUserPhoneException("El teléfono solo debe contener números.");
     }
 
     private static void ValidatePassword(string password)

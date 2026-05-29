@@ -17,7 +17,6 @@ public class ClientIntegrationTests : IntegrationTestBase
         var client = new Client
         {
             Name = "Juan Gomez",
-            Phone = "987654321",
             Dni = "12345678"
         };
 
@@ -27,7 +26,6 @@ public class ClientIntegrationTests : IntegrationTestBase
         var retrieved = await clientRepository.FindByIdAsync(client.Id);
         Assert.NotNull(retrieved);
         Assert.Equal("Juan Gomez", retrieved.Name);
-        Assert.Equal("987654321", retrieved.Phone);
         Assert.Equal("12345678", retrieved.Dni);
 
         CleanupDatabase(dbContext);
@@ -40,8 +38,8 @@ public class ClientIntegrationTests : IntegrationTestBase
         var clientRepository = new ClientRepository(dbContext);
         var unitOfWork = new UnitOfWork(dbContext);
 
-        var client1 = new Client { Name = "Client One", Phone = "111111111", Dni = "11111111" };
-        var client2 = new Client { Name = "Client Two", Phone = "222222222", Dni = "22222222" };
+        var client1 = new Client { Name = "Client One", Dni = "11111111" };
+        var client2 = new Client { Name = "Client Two", Dni = "22222222" };
 
         await clientRepository.AddAsync(client1);
         await clientRepository.AddAsync(client2);
@@ -64,19 +62,19 @@ public class ClientIntegrationTests : IntegrationTestBase
         var clientRepository = new ClientRepository(dbContext);
         var unitOfWork = new UnitOfWork(dbContext);
 
-        var client = new Client { Name = "Original Name", Phone = "999999999", Dni = "99999999" };
+        var client = new Client { Name = "Original Name", Dni = "99999999" };
 
         await clientRepository.AddAsync(client);
         await unitOfWork.CompleteAsync();
 
-        client.Update(new UpdateClientCommand(client.Id, "Updated Name", "888888888", "88888888", client.UserId));
+        client.Update(new UpdateClientCommand(client.Id, "Updated Name", "88888888", client.UserId));
         clientRepository.Update(client);
         await unitOfWork.CompleteAsync();
 
         var updated = await clientRepository.FindByIdAsync(client.Id);
         Assert.NotNull(updated);
         Assert.Equal("Updated Name", updated.Name);
-        Assert.Equal("888888888", updated.Phone);
+        Assert.Equal("88888888", updated.Dni);
 
         CleanupDatabase(dbContext);
     }
@@ -88,7 +86,7 @@ public class ClientIntegrationTests : IntegrationTestBase
         var clientRepository = new ClientRepository(dbContext);
         var unitOfWork = new UnitOfWork(dbContext);
 
-        var client = new Client { Name = "Maria Lopez", Phone = "912345678", Dni = "87654321" };
+        var client = new Client { Name = "Maria Lopez", Dni = "87654321" };
 
         await clientRepository.AddAsync(client);
         await unitOfWork.CompleteAsync();

@@ -11,7 +11,6 @@ public static class ClientResourceFromEntityAssembler
         return new ClientResource(
             entity.Id,
             entity.Name,
-            entity.Phone,
             entity.Dni,
             entity.UserId);
     }

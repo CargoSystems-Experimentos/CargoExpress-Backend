@@ -31,7 +31,9 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
-builder.Services.AddControllers( options => options.Conventions.Add(new KebabCaseRouteNamingConvention()));
+builder.Services.AddControllers( options => options.Conventions.Add(new KebabCaseRouteNamingConvention()))
+    .AddJsonOptions(options =>
+        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter()));
 
 // Add CORS Policy
 builder.Services.AddCors(options =>

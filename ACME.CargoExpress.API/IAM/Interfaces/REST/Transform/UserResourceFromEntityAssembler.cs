@@ -6,6 +6,6 @@ public static class UserResourceFromEntityAssembler
 {
     public static UserResource ToResourceFromEntity(Domain.Model.Aggregates.User user)
     {
-        return new UserResource(user.Id, user.Username);
+        return new UserResource(user.Id, user.Username, user.Phone);
     }
 }

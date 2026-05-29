@@ -14,12 +14,6 @@ public class EntrepreneurRepository(AppDbContext context)
         return await context.Entrepreneurs.FirstOrDefaultAsync(e => e.UserId == userId);
     }
 
-    public async Task<Entrepreneur?> FindByPhoneAsync(string phone)
-    {
-        return await Context.Set<Entrepreneur>()
-            .FirstOrDefaultAsync(e => e.Phone == phone);
-    }
-
     public async Task<Entrepreneur?> FindByRucAsync(string ruc)
     {
         return await Context.Set<Entrepreneur>()

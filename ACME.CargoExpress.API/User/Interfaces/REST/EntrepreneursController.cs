@@ -17,48 +17,6 @@ public class EntrepreneursController(
     IEntrepreneurCommandService entrepreneurCommandService,
     ITripQueryService tripQueryService) : ControllerBase
 {
-    [HttpPost]
-    public async Task<IActionResult> CreateEntrepreneur([FromBody] CreateEntrepreneurResource createEntrepreneurResource)
-    {
-        try
-        {
-            var createEntrepreneurCommand = CreateEntrepreneurCommandFromResourceAssembler.ToCommandFromResource(createEntrepreneurResource);
-            var entrepreneur = await entrepreneurCommandService.Handle(createEntrepreneurCommand);
-            if (entrepreneur is null)
-                return BadRequest(new { message = "No se pudo crear el emprendedor." });
-            var resource = EntrepreneurResourceFromEntityAssembler.ToResourceFromEntity(entrepreneur);
-            return CreatedAtAction(nameof(GetEntrepreneurById), new { entrepreneurId = resource.Id }, resource);
-        }
-        catch (InvalidEntrepreneurNameException e)
-        {
-            return BadRequest(new { message = e.Message });
-        }
-        catch (InvalidEntrepreneurPhoneException e)
-        {
-            return BadRequest(new { message = e.Message });
-        }
-        catch (InvalidEntrepreneurRucException e)
-        {
-            return BadRequest(new { message = e.Message });
-        }
-        catch (DuplicateEntrepreneurNameException e)
-        {
-            return Conflict(new { message = e.Message });
-        }
-        catch (DuplicateEntrepreneurPhoneException e)
-        {
-            return Conflict(new { message = e.Message });
-        }
-        catch (DuplicateEntrepreneurRucException e)
-        {
-            return Conflict(new { message = e.Message });
-        }
-        catch (UserNotFoundException e)
-        {
-            return NotFound(new { message = e.Message });
-        }
-    }
-
     [HttpGet]
     public async Task<IActionResult> GetAllEntrepreneurs()
     {
@@ -93,19 +51,11 @@ public class EntrepreneursController(
         {
             return BadRequest(new { message = e.Message });
         }
-        catch (InvalidEntrepreneurPhoneException e)
-        {
-            return BadRequest(new { message = e.Message });
-        }
         catch (InvalidEntrepreneurRucException e)
         {
             return BadRequest(new { message = e.Message });
         }
         catch (DuplicateEntrepreneurNameException e)
-        {
-            return Conflict(new { message = e.Message });
-        }
-        catch (DuplicateEntrepreneurPhoneException e)
         {
             return Conflict(new { message = e.Message });
         }

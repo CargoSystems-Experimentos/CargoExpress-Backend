@@ -7,6 +7,6 @@ public static class UpdateEntrepreneurCommandFromResourceAssembler
 {
     public static UpdateEntrepreneurCommand ToCommandFromResource(UpdateEntrepreneurResource resource, int entrepreneurId)
     {
-        return new UpdateEntrepreneurCommand(entrepreneurId, resource.Name, resource.Phone, resource.Ruc, resource.UserId);
+        return new UpdateEntrepreneurCommand(entrepreneurId, resource.Name, resource.Ruc, resource.UserId);
     }
 }

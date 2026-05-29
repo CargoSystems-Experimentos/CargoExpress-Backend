@@ -10,7 +10,6 @@ public static class EntrepreneurResourceFromEntityAssembler
         return new EntrepreneurResource(
             entity.Id,
             entity.Name,
-            entity.Phone,
             entity.Ruc,
             entity.UserId);
     }

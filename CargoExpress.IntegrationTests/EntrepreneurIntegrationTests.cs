@@ -17,7 +17,6 @@ public class EntrepreneurIntegrationTests : IntegrationTestBase
         var entrepreneur = new Entrepreneur
         {
             Name = "Transportes SAC",
-            Phone = "987654321",
             Ruc = "20123456789"
         };
 
@@ -27,7 +26,6 @@ public class EntrepreneurIntegrationTests : IntegrationTestBase
         var retrieved = await entrepreneurRepository.FindByIdAsync(entrepreneur.Id);
         Assert.NotNull(retrieved);
         Assert.Equal("Transportes SAC", retrieved.Name);
-        Assert.Equal("987654321", retrieved.Phone);
         Assert.Equal("20123456789", retrieved.Ruc);
 
         CleanupDatabase(dbContext);
@@ -43,13 +41,11 @@ public class EntrepreneurIntegrationTests : IntegrationTestBase
         var entrepreneur1 = new Entrepreneur
         {
             Name = "Empresa Uno SAC",
-            Phone = "111111111",
             Ruc = "20111111111"
         };
         var entrepreneur2 = new Entrepreneur
         {
             Name = "Empresa Dos SAC",
-            Phone = "222222222",
             Ruc = "20222222222"
         };
 
@@ -77,7 +73,6 @@ public class EntrepreneurIntegrationTests : IntegrationTestBase
         var entrepreneur = new Entrepreneur
         {
             Name = "Old Company",
-            Phone = "999999999",
             Ruc = "20999999999"
         };
 
@@ -85,7 +80,7 @@ public class EntrepreneurIntegrationTests : IntegrationTestBase
         await unitOfWork.CompleteAsync();
 
         entrepreneur.Update(new UpdateEntrepreneurCommand(
-            entrepreneur.Id, "New Company SAC", "888888888", "20888888888", entrepreneur.UserId));
+            entrepreneur.Id, "New Company SAC", "20888888888", entrepreneur.UserId));
         entrepreneurRepository.Update(entrepreneur);
         await unitOfWork.CompleteAsync();
 
@@ -107,7 +102,6 @@ public class EntrepreneurIntegrationTests : IntegrationTestBase
         var entrepreneur = new Entrepreneur
         {
             Name = "Cargo Logistics SAC",
-            Phone = "945678123",
             Ruc = "20567812345"
         };
 

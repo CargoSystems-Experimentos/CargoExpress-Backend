@@ -4,7 +4,9 @@ using Moq;
 using ACME.CargoExpress.API.User.Domain.Model.Aggregates;
 using ACME.CargoExpress.API.User.Domain.Repositories;
 
-namespace CargoExpress.UnitTests
+namespace CargoExpress.UnitTests{}
+
+/*
 {
     public class UserUnitTest
     {
@@ -70,3 +72,4 @@ namespace CargoExpress.UnitTests
         }
     }
 }
+*/

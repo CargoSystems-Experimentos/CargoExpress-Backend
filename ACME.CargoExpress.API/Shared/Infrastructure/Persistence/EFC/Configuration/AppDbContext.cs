@@ -153,6 +153,8 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
         builder.Entity<IAM.Domain.Model.Aggregates.User>().Property(u => u.Username).IsRequired();
         builder.Entity<IAM.Domain.Model.Aggregates.User>().HasIndex(u => u.Username).IsUnique();
         builder.Entity<IAM.Domain.Model.Aggregates.User>().Property(u => u.PasswordHash).IsRequired();
+        builder.Entity<IAM.Domain.Model.Aggregates.User>().Property(u => u.Phone).IsRequired().HasMaxLength(9);
+        builder.Entity<IAM.Domain.Model.Aggregates.User>().HasIndex(u => u.Phone).IsUnique();
         builder.Entity<IAM.Domain.Model.Aggregates.User>().Property(u => u.CreatedAt).IsRequired();
 
         //User Bounded Context
@@ -173,10 +175,8 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
         builder.Entity<Entrepreneur>().HasKey(e => e.Id);
         builder.Entity<Entrepreneur>().Property(e => e.Id).IsRequired().ValueGeneratedOnAdd();
         builder.Entity<Entrepreneur>().Property(e => e.Name).IsRequired().HasMaxLength(60);
-        builder.Entity<Entrepreneur>().Property(e => e.Phone).IsRequired().HasMaxLength(9);
         builder.Entity<Entrepreneur>().Property(e => e.Ruc).IsRequired().HasMaxLength(11);
         builder.Entity<Entrepreneur>().HasIndex(e => e.Name).IsUnique();
-        builder.Entity<Entrepreneur>().HasIndex(e => e.Phone).IsUnique();
         builder.Entity<Entrepreneur>().HasIndex(e => e.Ruc).IsUnique();
 
         //Entrepreneur table relationships

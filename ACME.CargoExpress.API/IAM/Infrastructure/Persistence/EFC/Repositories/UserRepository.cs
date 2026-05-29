@@ -38,4 +38,16 @@ public class UserRepository(AppDbContext context) : BaseRepository<Domain.Model.
     {
         return Context.Set<Domain.Model.Aggregates.User>().Any(user => user.Username.Equals(username));
     }
+
+    /**
+     * <summary>
+     *     Find a user by phone
+     * </summary>
+     * <param name="phone">The phone to search</param>
+     * <returns>The user, or null if none exists</returns>
+     */
+    public async Task<Domain.Model.Aggregates.User?> FindByPhoneAsync(string phone)
+    {
+        return await Context.Set<Domain.Model.Aggregates.User>().FirstOrDefaultAsync(user => user.Phone.Equals(phone));
+    }
 }

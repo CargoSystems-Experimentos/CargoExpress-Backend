@@ -1,3 +1,3 @@
-﻿namespace ACME.CargoExpress.API.User.Interfaces.REST.Resources;
+namespace ACME.CargoExpress.API.User.Interfaces.REST.Resources;
 
-public record UpdateClientResource(string Name, string Phone, string Dni, int UserId);
+public record UpdateClientResource(string Name, string Dni, int UserId);

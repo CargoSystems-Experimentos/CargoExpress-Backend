@@ -16,11 +16,7 @@ public class ClientCommandService(
     public async Task<Client?> Handle(CreateClientCommand command)
     {
         ValidateName(command.Name);
-        ValidatePhone(command.Phone);
         ValidateDni(command.Dni);
-
-        if (await clientRepository.FindByPhoneAsync(command.Phone) is not null)
-            throw new DuplicateClientPhoneException(command.Phone);
 
         if (await clientRepository.FindByDniAsync(command.Dni) is not null)
             throw new DuplicateClientDniException(command.Dni);
@@ -37,15 +33,10 @@ public class ClientCommandService(
     public async Task<Client?> Handle(UpdateClientCommand command)
     {
         ValidateName(command.Name);
-        ValidatePhone(command.Phone);
         ValidateDni(command.Dni);
 
         var client = await clientRepository.FindByIdAsync(command.ClientId)
                      ?? throw new ClientNotFoundException(command.ClientId);
-
-        var existingByPhone = await clientRepository.FindByPhoneAsync(command.Phone);
-        if (existingByPhone is not null && existingByPhone.Id != command.ClientId)
-            throw new DuplicateClientPhoneException(command.Phone);
 
         var existingByDni = await clientRepository.FindByDniAsync(command.Dni);
         if (existingByDni is not null && existingByDni.Id != command.ClientId)
@@ -63,18 +54,6 @@ public class ClientCommandService(
 
         if (name.Length < 8 || name.Length > 60)
             throw new InvalidClientNameException("El nombre debe tener entre 8 y 60 caracteres.");
-    }
-
-    private static void ValidatePhone(string phone)
-    {
-        if (string.IsNullOrWhiteSpace(phone))
-            throw new InvalidClientPhoneException("El teléfono es obligatorio.");
-
-        if (phone.Length != 9)
-            throw new InvalidClientPhoneException("El teléfono debe tener exactamente 9 caracteres.");
-
-        if (!phone.All(char.IsDigit))
-            throw new InvalidClientPhoneException("El teléfono solo debe contener números.");
     }
 
     private static void ValidateDni(string dni)

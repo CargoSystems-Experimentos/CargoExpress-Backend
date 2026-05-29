@@ -19,10 +19,4 @@ public class ClientRepository(AppDbContext context)
         return await Context.Set<Client>()
             .FirstOrDefaultAsync(c => c.Dni == dni);
     }
-
-    public async Task<Client?> FindByPhoneAsync(string phone)
-    {
-        return await Context.Set<Client>()
-            .FirstOrDefaultAsync(c => c.Phone == phone);
-    }
 }

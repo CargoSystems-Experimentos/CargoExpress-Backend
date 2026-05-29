@@ -16,14 +16,10 @@ public class EntrepreneurCommandService(
     public async Task<Entrepreneur?> Handle(CreateEntrepreneurCommand command)
     {
         ValidateName(command.Name);
-        ValidatePhone(command.Phone);
         ValidateRuc(command.Ruc);
 
         if (await entrepreneurRepository.FindByNameAsync(command.Name) is not null)
             throw new DuplicateEntrepreneurNameException(command.Name);
-
-        if (await entrepreneurRepository.FindByPhoneAsync(command.Phone) is not null)
-            throw new DuplicateEntrepreneurPhoneException(command.Phone);
 
         if (await entrepreneurRepository.FindByRucAsync(command.Ruc) is not null)
             throw new DuplicateEntrepreneurRucException(command.Ruc);
@@ -40,7 +36,6 @@ public class EntrepreneurCommandService(
     public async Task<Entrepreneur?> Handle(UpdateEntrepreneurCommand command)
     {
         ValidateName(command.Name);
-        ValidatePhone(command.Phone);
         ValidateRuc(command.Ruc);
 
         var entrepreneur = await entrepreneurRepository.FindByIdAsync(command.EntrepreneurId)
@@ -49,10 +44,6 @@ public class EntrepreneurCommandService(
         var existingByName = await entrepreneurRepository.FindByNameAsync(command.Name);
         if (existingByName is not null && existingByName.Id != command.EntrepreneurId)
             throw new DuplicateEntrepreneurNameException(command.Name);
-
-        var existingByPhone = await entrepreneurRepository.FindByPhoneAsync(command.Phone);
-        if (existingByPhone is not null && existingByPhone.Id != command.EntrepreneurId)
-            throw new DuplicateEntrepreneurPhoneException(command.Phone);
 
         var existingByRuc = await entrepreneurRepository.FindByRucAsync(command.Ruc);
         if (existingByRuc is not null && existingByRuc.Id != command.EntrepreneurId)
@@ -70,18 +61,6 @@ public class EntrepreneurCommandService(
 
         if (name.Length < 8 || name.Length > 60)
             throw new InvalidEntrepreneurNameException("El nombre debe tener entre 8 y 60 caracteres.");
-    }
-
-    private static void ValidatePhone(string phone)
-    {
-        if (string.IsNullOrWhiteSpace(phone))
-            throw new InvalidEntrepreneurPhoneException("El teléfono es obligatorio.");
-
-        if (phone.Length != 9)
-            throw new InvalidEntrepreneurPhoneException("El teléfono debe tener exactamente 9 caracteres.");
-
-        if (!phone.All(char.IsDigit))
-            throw new InvalidEntrepreneurPhoneException("El teléfono solo debe contener números.");
     }
 
     private static void ValidateRuc(string ruc)

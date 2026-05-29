@@ -17,44 +17,6 @@ public class ClientsController(
     IClientCommandService clientCommandService,
     ITripQueryService tripQueryService) : ControllerBase
 {
-    [HttpPost]
-    public async Task<IActionResult> CreateClient([FromBody] CreateClientResource createClientResource)
-    {
-        try
-        {
-            var createClientCommand = CreateClientCommandFromResourceAssembler.ToCommandFromResource(createClientResource);
-            var client = await clientCommandService.Handle(createClientCommand);
-            if (client is null)
-                return BadRequest(new { message = "No se pudo crear el cliente." });
-            var resource = ClientResourceFromEntityAssembler.ToResourceFromEntity(client);
-            return CreatedAtAction(nameof(GetClientById), new { clientId = resource.Id }, resource);
-        }
-        catch (InvalidClientNameException e)
-        {
-            return BadRequest(new { message = e.Message });
-        }
-        catch (InvalidClientPhoneException e)
-        {
-            return BadRequest(new { message = e.Message });
-        }
-        catch (InvalidClientDniException e)
-        {
-            return BadRequest(new { message = e.Message });
-        }
-        catch (DuplicateClientPhoneException e)
-        {
-            return Conflict(new { message = e.Message });
-        }
-        catch (DuplicateClientDniException e)
-        {
-            return Conflict(new { message = e.Message });
-        }
-        catch (UserNotFoundException e)
-        {
-            return NotFound(new { message = e.Message });
-        }
-    }
-
     [HttpGet]
     public async Task<IActionResult> GetAllClients()
     {
@@ -89,17 +51,9 @@ public class ClientsController(
         {
             return BadRequest(new { message = e.Message });
         }
-        catch (InvalidClientPhoneException e)
-        {
-            return BadRequest(new { message = e.Message });
-        }
         catch (InvalidClientDniException e)
         {
             return BadRequest(new { message = e.Message });
-        }
-        catch (DuplicateClientPhoneException e)
-        {
-            return Conflict(new { message = e.Message });
         }
         catch (DuplicateClientDniException e)
         {

@@ -7,7 +7,7 @@ public static class UpdateClientCommandFromResourceAssembler
 {
     public static UpdateClientCommand ToCommandFromResource(UpdateClientResource resource, int clientId)
     {
-        return new UpdateClientCommand(clientId, resource.Name, resource.Phone, resource.Dni, resource.UserId);
+        return new UpdateClientCommand(clientId, resource.Name, resource.Dni, resource.UserId);
     }
     
 }

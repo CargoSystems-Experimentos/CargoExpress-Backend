@@ -9,16 +9,14 @@ public class Entrepreneur
     public Entrepreneur()
     {
         Name = string.Empty;
-        Phone = string.Empty;
         Ruc = string.Empty;
         User = new IAM.Domain.Model.Aggregates.User();
         Trips = new List<Trip>();
     }
 
-    public Entrepreneur(string name, string phone, string ruc, int userId, IAM.Domain.Model.Aggregates.User user)
+    public Entrepreneur(string name, string ruc, int userId, IAM.Domain.Model.Aggregates.User user)
     {
         Name = name;
-        Phone = phone;
         Ruc = ruc;
         UserId = userId;
         User = user;
@@ -28,7 +26,6 @@ public class Entrepreneur
     public Entrepreneur(CreateEntrepreneurCommand command, IAM.Domain.Model.Aggregates.User user)
     {
         Name = command.Name;
-        Phone = command.Phone;
         Ruc = command.Ruc;
         UserId = command.UserId;
         User = user;
@@ -38,13 +35,11 @@ public class Entrepreneur
     public void Update(UpdateEntrepreneurCommand command)
     {
         Name = command.Name;
-        Phone = command.Phone;
         Ruc = command.Ruc;
     }
 
     public int Id { get; set; }
     public string Name { get; set; }
-    public string Phone { get; set; }
     public string Ruc { get; set; }
     public IAM.Domain.Model.Aggregates.User User { get; set; }
     public int UserId { get; set; }
