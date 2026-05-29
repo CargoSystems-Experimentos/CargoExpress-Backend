@@ -55,6 +55,10 @@ public class EntrepreneursController(
         {
             return BadRequest(new { message = e.Message });
         }
+        catch (InvalidEntrepreneurAddressException e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
         catch (DuplicateEntrepreneurNameException e)
         {
             return Conflict(new { message = e.Message });

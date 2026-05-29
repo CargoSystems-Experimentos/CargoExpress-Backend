@@ -50,7 +50,7 @@ public class AuthenticationController(IUserCommandService userCommandService) : 
      *           "password": "Password1!",
      *           "phone": "987654321",
      *           "role": "CLIENT",
-     *           "profile": { "name": "Juan Gomez", "dni": "12345678" }
+     *           "profile": { "name": "Juan Gomez", "dni": "12345678", "birthDate": "1990-05-15" }
      *         }
      *
      *     Registration as Entrepreneur:
@@ -60,7 +60,7 @@ public class AuthenticationController(IUserCommandService userCommandService) : 
      *           "password": "Password1!",
      *           "phone": "987654322",
      *           "role": "ENTREPRENEUR",
-     *           "profile": { "name": "Transportes SAC", "ruc": "20123456789" }
+     *           "profile": { "name": "Transportes SAC", "ruc": "20123456789", "address": "Av. Lima 123, Lima, Peru" }
      *         }
      * </remarks>
      * <param name="signUpResource">The sign up resource containing the credentials, phone, role and profile.</param>
@@ -105,11 +105,19 @@ public class AuthenticationController(IUserCommandService userCommandService) : 
         {
             return BadRequest(new { message = e.Message });
         }
+        catch (InvalidClientBirthDateException e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
         catch (InvalidEntrepreneurNameException e)
         {
             return BadRequest(new { message = e.Message });
         }
         catch (InvalidEntrepreneurRucException e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+        catch (InvalidEntrepreneurAddressException e)
         {
             return BadRequest(new { message = e.Message });
         }

@@ -11,6 +11,7 @@ public static class EntrepreneurResourceFromEntityAssembler
             entity.Id,
             entity.Name,
             entity.Ruc,
+            entity.Address,
             entity.UserId);
     }
 }

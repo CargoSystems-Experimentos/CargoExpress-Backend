@@ -17,6 +17,7 @@ public class ClientCommandService(
     {
         ValidateName(command.Name);
         ValidateDni(command.Dni);
+        ValidateBirthDate(command.BirthDate);
 
         if (await clientRepository.FindByDniAsync(command.Dni) is not null)
             throw new DuplicateClientDniException(command.Dni);
@@ -34,6 +35,7 @@ public class ClientCommandService(
     {
         ValidateName(command.Name);
         ValidateDni(command.Dni);
+        ValidateBirthDate(command.BirthDate);
 
         var client = await clientRepository.FindByIdAsync(command.ClientId)
                      ?? throw new ClientNotFoundException(command.ClientId);
@@ -66,5 +68,22 @@ public class ClientCommandService(
 
         if (!dni.All(char.IsDigit))
             throw new InvalidClientDniException("El DNI solo debe contener números.");
+    }
+
+    private static void ValidateBirthDate(DateTime birthDate)
+    {
+        if (birthDate == DateTime.MinValue)
+            throw new InvalidClientBirthDateException("La fecha de nacimiento es obligatoria.");
+
+        var today = DateTime.Today;
+        if (birthDate > today)
+            throw new InvalidClientBirthDateException("La fecha de nacimiento no puede ser en el futuro.");
+
+        var age = today.Year - birthDate.Year;
+        if (birthDate.Date > today.AddYears(-age))
+            age--;
+
+        if (age < 18)
+            throw new InvalidClientBirthDateException("El cliente debe tener al menos 18 años de edad.");
     }
 }

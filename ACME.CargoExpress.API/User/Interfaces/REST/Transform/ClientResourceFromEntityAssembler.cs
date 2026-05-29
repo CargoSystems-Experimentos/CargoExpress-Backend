@@ -12,6 +12,7 @@ public static class ClientResourceFromEntityAssembler
             entity.Id,
             entity.Name,
             entity.Dni,
+            entity.BirthDate,
             entity.UserId);
     }
 }

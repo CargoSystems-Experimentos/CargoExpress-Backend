@@ -9,4 +9,4 @@ namespace ACME.CargoExpress.API.IAM.Interfaces.REST.Resources;
  *     is used when the role is ENTREPRENEUR.
  * </remarks>
  */
-public record SignUpProfileResource(string Name, string? Dni, string? Ruc);
+public record SignUpProfileResource(string Name, string? Dni, DateTime? BirthDate, string? Ruc, string? Address);

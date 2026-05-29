@@ -18,4 +18,6 @@ public record SignUpCommand(
     string Role,
     string Name,
     string? Dni,
-    string? Ruc);
+    DateTime? BirthDate,
+    string? Ruc,
+    string? Address);

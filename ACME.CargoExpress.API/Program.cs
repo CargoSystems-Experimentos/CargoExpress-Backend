@@ -83,8 +83,8 @@ builder.Services.AddSwaggerGen(
         c.SwaggerDoc("v1",new OpenApiInfo
             {
                 Title = "ACME.CargoExpress.API",
-                Version = "v1.0.0",
-                Description = "ACME Cargo Express API",
+                Version = "v3.0.0",
+                Description = "ACME Cargo Express API - Security Update",
                 TermsOfService = new Uri("https://acme-cargo.com/tos"),
                 Contact = new OpenApiContact
                 {

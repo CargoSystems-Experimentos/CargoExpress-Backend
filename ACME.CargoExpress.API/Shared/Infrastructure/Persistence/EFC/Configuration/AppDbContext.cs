@@ -162,7 +162,11 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
         //Client table
         builder.Entity<Client>().HasKey(c => c.Id);
         builder.Entity<Client>().Property(c => c.Id).IsRequired().ValueGeneratedOnAdd();
-        
+        builder.Entity<Client>().Property(c => c.Name).IsRequired().HasMaxLength(60);
+        builder.Entity<Client>().Property(c => c.Dni).IsRequired().HasMaxLength(8);
+        builder.Entity<Client>().Property(c => c.BirthDate).IsRequired();
+        builder.Entity<Client>().HasIndex(c => c.Dni).IsUnique();
+
         //Client table relationships
         builder.Entity<Client>()
             .HasOne(c => c.User)
@@ -176,6 +180,7 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
         builder.Entity<Entrepreneur>().Property(e => e.Id).IsRequired().ValueGeneratedOnAdd();
         builder.Entity<Entrepreneur>().Property(e => e.Name).IsRequired().HasMaxLength(60);
         builder.Entity<Entrepreneur>().Property(e => e.Ruc).IsRequired().HasMaxLength(11);
+        builder.Entity<Entrepreneur>().Property(e => e.Address).IsRequired().HasMaxLength(200);
         builder.Entity<Entrepreneur>().HasIndex(e => e.Name).IsUnique();
         builder.Entity<Entrepreneur>().HasIndex(e => e.Ruc).IsUnique();
 

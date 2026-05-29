@@ -55,6 +55,10 @@ public class ClientsController(
         {
             return BadRequest(new { message = e.Message });
         }
+        catch (InvalidClientBirthDateException e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
         catch (DuplicateClientDniException e)
         {
             return Conflict(new { message = e.Message });

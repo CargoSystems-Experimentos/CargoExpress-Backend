@@ -17,6 +17,7 @@ public class EntrepreneurCommandService(
     {
         ValidateName(command.Name);
         ValidateRuc(command.Ruc);
+        ValidateAddress(command.Address);
 
         if (await entrepreneurRepository.FindByNameAsync(command.Name) is not null)
             throw new DuplicateEntrepreneurNameException(command.Name);
@@ -37,6 +38,7 @@ public class EntrepreneurCommandService(
     {
         ValidateName(command.Name);
         ValidateRuc(command.Ruc);
+        ValidateAddress(command.Address);
 
         var entrepreneur = await entrepreneurRepository.FindByIdAsync(command.EntrepreneurId)
                            ?? throw new EntrepreneurNotFoundException(command.EntrepreneurId);
@@ -73,5 +75,14 @@ public class EntrepreneurCommandService(
 
         if (!ruc.All(char.IsDigit))
             throw new InvalidEntrepreneurRucException("El RUC solo debe contener números.");
+    }
+
+    private static void ValidateAddress(string address)
+    {
+        if (string.IsNullOrWhiteSpace(address))
+            throw new InvalidEntrepreneurAddressException("La dirección es obligatoria.");
+
+        if (address.Length > 200)
+            throw new InvalidEntrepreneurAddressException("La dirección no debe exceder 200 caracteres.");
     }
 }

@@ -92,11 +92,11 @@ public class UserCommandService(
             {
                 case ERole.CLIENT:
                     await clientCommandService.Handle(
-                        new CreateClientCommand(command.Name, command.Dni ?? string.Empty, user.Id));
+                        new CreateClientCommand(command.Name, command.Dni ?? string.Empty, command.BirthDate ?? DateTime.MinValue, user.Id));
                     break;
                 case ERole.ENTREPRENEUR:
                     await entrepreneurCommandService.Handle(
-                        new CreateEntrepreneurCommand(command.Name, command.Ruc ?? string.Empty, user.Id));
+                        new CreateEntrepreneurCommand(command.Name, command.Ruc ?? string.Empty, command.Address ?? string.Empty, user.Id));
                     break;
                 default:
                     throw new InvalidRoleException(command.Role);
@@ -114,14 +114,17 @@ public class UserCommandService(
     {
         switch (role)
         {
-            // A Client must register only name and DNI; a RUC is not allowed.
+            // A Client must register only name, DNI and BirthDate; a RUC or Address is not allowed.
             case ERole.CLIENT when !string.IsNullOrWhiteSpace(command.Ruc):
                 throw new InvalidProfileException(
-                    "Un cliente solo debe registrar nombre y DNI; no debe incluir RUC.");
-            // An Entrepreneur must register only name and RUC; a DNI is not allowed.
+                    "Un cliente solo debe registrar nombre, DNI y fecha de nacimiento; no debe incluir RUC.");
+            case ERole.CLIENT when !string.IsNullOrWhiteSpace(command.Address):
+                throw new InvalidProfileException(
+                    "Un cliente solo debe registrar nombre, DNI y fecha de nacimiento; no debe incluir dirección.");
+            // An Entrepreneur must register only name, RUC and Address; a DNI is not allowed.
             case ERole.ENTREPRENEUR when !string.IsNullOrWhiteSpace(command.Dni):
                 throw new InvalidProfileException(
-                    "Un emprendedor solo debe registrar nombre y RUC; no debe incluir DNI.");
+                    "Un emprendedor solo debe registrar nombre, RUC y dirección; no debe incluir DNI.");
         }
     }
 

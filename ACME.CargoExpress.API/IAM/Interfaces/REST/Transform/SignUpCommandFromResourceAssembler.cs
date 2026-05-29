@@ -14,6 +14,8 @@ public static class SignUpCommandFromResourceAssembler
             resource.Role,
             resource.Profile?.Name ?? string.Empty,
             resource.Profile?.Dni,
-            resource.Profile?.Ruc);
+            resource.Profile?.BirthDate,
+            resource.Profile?.Ruc,
+            resource.Profile?.Address);
     }
 }
