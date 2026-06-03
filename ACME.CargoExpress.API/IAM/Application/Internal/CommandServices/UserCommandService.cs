@@ -2,7 +2,6 @@ using System.Text.RegularExpressions;
 using ACME.CargoExpress.API.IAM.Application.Internal.OutboundServices;
 using ACME.CargoExpress.API.IAM.Domain.Exceptions;
 using ACME.CargoExpress.API.IAM.Domain.Model.Commands;
-using ACME.CargoExpress.API.IAM.Domain.Model.ValueObjects;
 using ACME.CargoExpress.API.IAM.Domain.Repositories;
 using ACME.CargoExpress.API.IAM.Domain.Services;
 using ACME.CargoExpress.API.Shared.Domain.Repositories;
@@ -64,11 +63,7 @@ public class UserCommandService(
      */
     public async Task Handle(SignUpCommand command)
     {
-        if (string.IsNullOrWhiteSpace(command.Role) || !Enum.IsDefined(typeof(ERole), command.Role))
-            throw new InvalidRoleException(command.Role ?? string.Empty);
-
-        var role = Enum.Parse<ERole>(command.Role);
-        ValidateProfile(role, command);
+        ValidateProfile(command.Role, command);
 
         if (string.IsNullOrWhiteSpace(command.Username) || !EmailRegex.IsMatch(command.Username))
             throw new InvalidUsernameException(command.Username);
@@ -83,7 +78,7 @@ public class UserCommandService(
             throw new DuplicateUserPhoneException(command.Phone);
 
         var hashedPassword = hashingService.HashPassword(command.Password);
-        var user = new Domain.Model.Aggregates.User(command.Username, hashedPassword, command.Phone);
+        var user = new Domain.Model.Aggregates.User(command.Username, hashedPassword, command.Phone, command.Role);
 
         await userRepository.AddAsync(user);
         await unitOfWork.CompleteAsync();
@@ -92,18 +87,15 @@ public class UserCommandService(
         // so we never leave an account without a profile.
         try
         {
-            switch (role)
+            if (command.Role == false) // CLIENT
             {
-                case ERole.CLIENT:
-                    await clientCommandService.Handle(
-                        new CreateClientCommand(command.Name, command.Dni ?? string.Empty, command.BirthDate ?? DateTime.MinValue, user.Id));
-                    break;
-                case ERole.ENTREPRENEUR:
-                    await entrepreneurCommandService.Handle(
-                        new CreateEntrepreneurCommand(command.Name, command.Ruc ?? string.Empty, command.Address ?? string.Empty, user.Id));
-                    break;
-                default:
-                    throw new InvalidRoleException(command.Role);
+                await clientCommandService.Handle(
+                    new CreateClientCommand(command.Name, command.Dni ?? string.Empty, command.BirthDate ?? DateTime.MinValue, user.Id));
+            }
+            else // ENTREPRENEUR
+            {
+                await entrepreneurCommandService.Handle(
+                    new CreateEntrepreneurCommand(command.Name, command.Ruc ?? string.Empty, command.Address ?? string.Empty, user.Id));
             }
         }
         catch
@@ -114,19 +106,22 @@ public class UserCommandService(
         }
     }
 
-    private static void ValidateProfile(ERole role, SignUpCommand command)
+    private static void ValidateProfile(bool role, SignUpCommand command)
     {
-        switch (role)
+        if (role == false) // CLIENT
         {
             // A Client must register only name, DNI and BirthDate; a RUC or Address is not allowed.
-            case ERole.CLIENT when !string.IsNullOrWhiteSpace(command.Ruc):
+            if (!string.IsNullOrWhiteSpace(command.Ruc))
                 throw new InvalidProfileException(
                     "Un cliente solo debe registrar nombre, DNI y fecha de nacimiento; no debe incluir RUC.");
-            case ERole.CLIENT when !string.IsNullOrWhiteSpace(command.Address):
+            if (!string.IsNullOrWhiteSpace(command.Address))
                 throw new InvalidProfileException(
                     "Un cliente solo debe registrar nombre, DNI y fecha de nacimiento; no debe incluir dirección.");
+        }
+        else // ENTREPRENEUR
+        {
             // An Entrepreneur must register only name, RUC and Address; a DNI is not allowed.
-            case ERole.ENTREPRENEUR when !string.IsNullOrWhiteSpace(command.Dni):
+            if (!string.IsNullOrWhiteSpace(command.Dni))
                 throw new InvalidProfileException(
                     "Un emprendedor solo debe registrar nombre, RUC y dirección; no debe incluir DNI.");
         }

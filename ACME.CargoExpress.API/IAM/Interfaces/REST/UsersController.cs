@@ -2,9 +2,6 @@ using System.Net.Mime;
 using ACME.CargoExpress.API.IAM.Domain.Model.Queries;
 using ACME.CargoExpress.API.IAM.Domain.Services;
 using ACME.CargoExpress.API.IAM.Infrastructure.Pipeline.Middleware.Attributes;
-using ACME.CargoExpress.API.User.Domain.Model.Queries;
-using ACME.CargoExpress.API.User.Domain.Services;
-using ACME.CargoExpress.API.User.Interfaces.REST.Transform;
 using Microsoft.AspNetCore.Mvc;
 using UserResourceFromEntityAssembler = ACME.CargoExpress.API.IAM.Interfaces.REST.Transform.UserResourceFromEntityAssembler;
 
@@ -22,8 +19,7 @@ namespace ACME.CargoExpress.API.IAM.Interfaces.REST;
 [ApiController]
 [Route("api/v1/[controller]")]
 [Produces(MediaTypeNames.Application.Json)]
-public class UsersController(IUserQueryService userQueryService, IUserCommandService userCommandService,
-    IClientQueryService clientQueryService, IEntrepreneurQueryService entrepreneurQueryService) : ControllerBase
+public class UsersController(IUserQueryService userQueryService, IUserCommandService userCommandService) : ControllerBase
 {
     /**
      * <summary>
@@ -55,22 +51,12 @@ public class UsersController(IUserQueryService userQueryService, IUserCommandSer
         var userResources = users.Select(UserResourceFromEntityAssembler.ToResourceFromEntity);
         return Ok(userResources);
     }
-    
-    [HttpGet("{userId}/clients")]
-    public async Task<IActionResult> GetClientByUserId([FromRoute] int userId)
+
+    [HttpGet("{userId}/role")]
+    public async Task<IActionResult> GetUserRoleById([FromRoute] int userId)
     {
-        var client = await clientQueryService.Handle(new GetClientByUserIdQuery(userId));
-        if (client == null) return NotFound();
-        var resource = ClientResourceFromEntityAssembler.ToResourceFromEntity(client);
-        return Ok(resource);
-    }
-    
-    [HttpGet("{userId}/entrepreneurs")]
-    public async Task<IActionResult> GetEntrepreneurByUserId([FromRoute] int userId)
-    {
-        var entrepreneur = await entrepreneurQueryService.Handle(new GetEntrepreneurByUserIdQuery(userId));
-        if (entrepreneur == null) return NotFound();
-        var resource = EntrepreneurResourceFromEntityAssembler.ToResourceFromEntity(entrepreneur);
-        return Ok(resource);
+        var user = await userQueryService.Handle(new GetUserByIdQuery(userId));
+        if (user == null) return NotFound();
+        return Ok(new { role = user.Role });
     }
 }

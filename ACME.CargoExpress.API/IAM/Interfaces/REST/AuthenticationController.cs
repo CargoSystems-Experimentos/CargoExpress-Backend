@@ -53,7 +53,7 @@ public class AuthenticationController(IUserCommandService userCommandService) : 
      *     role-specific profile (Client or Entrepreneur).
      * </summary>
      * <remarks>
-     *     The request body must include the role (CLIENT or ENTREPRENEUR) and a
+     *     The request body must include the role (0=CLIENT or 1=ENTREPRENEUR) and a
      *     profile section with the role-specific fields.
      *
      *     Registration as Client:
@@ -62,7 +62,7 @@ public class AuthenticationController(IUserCommandService userCommandService) : 
      *           "username": "usuario@dominio.com",
      *           "password": "Password1!",
      *           "phone": "987654321",
-     *           "role": "CLIENT",
+     *           "role": false,
      *           "profile": { "name": "Juan Gomez", "dni": "12345678", "birthDate": "1990-05-15" }
      *         }
      *
@@ -72,7 +72,7 @@ public class AuthenticationController(IUserCommandService userCommandService) : 
      *           "username": "empresa@dominio.com",
      *           "password": "Password1!",
      *           "phone": "987654322",
-     *           "role": "ENTREPRENEUR",
+     *           "role": true,
      *           "profile": { "name": "Transportes SAC", "ruc": "20123456789", "address": "Av. Lima 123, Lima, Peru" }
      *         }
      * </remarks>

@@ -11,10 +11,10 @@ namespace ACME.CargoExpress.API.IAM.Domain.Model.Aggregates;
  *     This class is used to represent a user
  * </remarks>
  */
-public class User(string username, string passwordHash, string phone)
+public class User(string username, string passwordHash, string phone, bool role)
 {
 
-    public User() : this(string.Empty, string.Empty, string.Empty)
+    public User() : this(string.Empty, string.Empty, string.Empty, false)
     {
     }
 
@@ -24,6 +24,8 @@ public class User(string username, string passwordHash, string phone)
     [JsonIgnore] public string PasswordHash { get; private set; } = passwordHash;
 
     public string Phone { get; private set; } = phone;
+
+    public bool Role { get; private set; } = role;
 
     public DateTime CreatedAt { get; private set; } = TimeZoneInfo.ConvertTimeFromUtc(
         DateTime.UtcNow,
