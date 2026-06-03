@@ -158,15 +158,12 @@ builder.Services.AddScoped<IOngoingTripQueryService, OngoingTripQueryService>();
 // Repositories
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
 builder.Services.AddScoped<IEntrepreneurRepository, EntrepreneurRepository>();
-builder.Services.AddScoped<IConfigurationRepository, ConfigurationRepository>();
 // Commands
 builder.Services.AddScoped<IClientCommandService, ClientCommandService>();
 builder.Services.AddScoped<IEntrepreneurCommandService, EntrepreneurCommandService>();
-builder.Services.AddScoped<IConfigurationCommandService, ConfigurationCommandService>();
 // Queries
 builder.Services.AddScoped<IClientQueryService, ClientQueryService>();
 builder.Services.AddScoped<IEntrepreneurQueryService, EntrepreneurQueryService>();
-builder.Services.AddScoped<IConfigurationQueryService, ConfigurationQueryService>();
 
 // TokenSettings Configuration
 

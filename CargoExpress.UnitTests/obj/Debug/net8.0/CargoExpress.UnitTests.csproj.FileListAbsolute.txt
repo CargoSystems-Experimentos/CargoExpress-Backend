@@ -291,3 +291,4 @@ C:\Users\Adolfo PC\Downloads\CargoExpress-Web-Services\CargoExpress.UnitTests\ob
 C:\Users\Adolfo PC\Downloads\CargoExpress-Web-Services\CargoExpress.UnitTests\obj\Debug\net8.0\CargoExpress.UnitTests.pdb
 C:\Users\Adolfo PC\Downloads\CargoExpress-Web-Services\CargoExpress.UnitTests\obj\Debug\net8.0\CargoExpress.UnitTests.genruntimeconfig.cache
 C:\Users\Adolfo PC\Downloads\CargoExpress-Web-Services\CargoExpress.UnitTests\obj\Debug\net8.0\ref\CargoExpress.UnitTests.dll
+C:\Users\Adolfo PC\Documents\GitHub\CargoExpress-Backend\CargoExpress.UnitTests\bin\Debug\net8.0\ACME.CargoExpress.API.staticwebassets.endpoints.json

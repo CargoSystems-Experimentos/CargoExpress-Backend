@@ -1,5 +1,4 @@
 ﻿using ACME.CargoExpress.API.User.Domain.Model.Aggregates;
-using ACME.CargoExpress.API.User.Domain.Model.Entities;
 using ACME.CargoExpress.API.User.Domain.Model.Queries;
 using ACME.CargoExpress.API.User.Domain.Repositories;
 using ACME.CargoExpress.API.User.Domain.Services;

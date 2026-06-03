@@ -3,7 +3,6 @@ using ACME.CargoExpress.API.Registration.Domain.Model.Aggregates;
 using ACME.CargoExpress.API.Registration.Domain.Model.Entities;
 using ACME.CargoExpress.API.Shared.Infrastructure.Persistence.EFC.Configuration.Extensions;
 using ACME.CargoExpress.API.User.Domain.Model.Aggregates;
-using ACME.CargoExpress.API.User.Domain.Model.Entities;
 using EntityFrameworkCore.CreatedUpdatedDate.Extensions;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,7 +20,6 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
     public DbSet<IAM.Domain.Model.Aggregates.User> Users { get; set; }
     public DbSet<Client> Clients { get; set; }
     public DbSet<Entrepreneur> Entrepreneurs { get; set; }
-    public DbSet<User.Domain.Model.Entities.Configuration> Configurations { get; set; }
     public DbSet<Trip> Trips { get; set; }
     public DbSet<Expense> Expenses { get; set; }
     public DbSet<OngoingTrip> OngoingTrips { get; set; }
@@ -192,22 +190,6 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
             .HasForeignKey<Entrepreneur>(e => e.UserId)
             .HasPrincipalKey<IAM.Domain.Model.Aggregates.User>(u => u.Id);
         
-        // Configuration table
-        
-       builder.Entity<User.Domain.Model.Entities.Configuration>().HasKey(c => c.Id);
-       builder.Entity<User.Domain.Model.Entities.Configuration>().Property(c => c.Id).IsRequired().ValueGeneratedOnAdd();
-       builder.Entity<User.Domain.Model.Entities.Configuration>().Property(c => c.Theme).IsRequired().HasMaxLength(100);
-       builder.Entity<User.Domain.Model.Entities.Configuration>().Property(c => c.View).IsRequired().HasMaxLength(100);
-       builder.Entity<User.Domain.Model.Entities.Configuration>().Property(c => c.AllowDataCollection).IsRequired();
-       builder.Entity<User.Domain.Model.Entities.Configuration>().Property(c => c.UpdateDataSharing).IsRequired();
-       // Configuration table relationships
-       
-       builder.Entity<User.Domain.Model.Entities.Configuration>()
-           .HasOne(c => c.User)
-           .WithOne(u => u.Configuration)
-           .HasForeignKey<User.Domain.Model.Entities.Configuration>(c => c.UserId)
-           .HasPrincipalKey<IAM.Domain.Model.Aggregates.User>(u => u.Id);
-       
         // Apply SnakeCase Naming Convention
         builder.UseSnakeCaseWithPluralizedTableNamingConvention();
     }

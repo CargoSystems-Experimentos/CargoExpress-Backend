@@ -1,6 +1,5 @@
 using System.Text.Json.Serialization;
 using ACME.CargoExpress.API.User.Domain.Model.Aggregates;
-using ACME.CargoExpress.API.User.Domain.Model.Entities;
 
 namespace ACME.CargoExpress.API.IAM.Domain.Model.Aggregates;
 
@@ -57,8 +56,6 @@ public class User(string username, string passwordHash, string phone)
     }
     
     public Client? Client { get; internal set; }
-    
+
     public Entrepreneur? Entrepreneur { get; internal set; }
-    
-    public Configuration? Configuration { get; internal set; }
 }

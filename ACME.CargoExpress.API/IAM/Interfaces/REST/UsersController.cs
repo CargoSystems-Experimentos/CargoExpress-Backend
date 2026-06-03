@@ -22,9 +22,8 @@ namespace ACME.CargoExpress.API.IAM.Interfaces.REST;
 [ApiController]
 [Route("api/v1/[controller]")]
 [Produces(MediaTypeNames.Application.Json)]
-public class UsersController(IUserQueryService userQueryService, IUserCommandService userCommandService, 
-    IClientQueryService clientQueryService, IEntrepreneurQueryService entrepreneurQueryService,
-    IConfigurationQueryService configurationQueryService) : ControllerBase
+public class UsersController(IUserQueryService userQueryService, IUserCommandService userCommandService,
+    IClientQueryService clientQueryService, IEntrepreneurQueryService entrepreneurQueryService) : ControllerBase
 {
     /**
      * <summary>
@@ -72,15 +71,6 @@ public class UsersController(IUserQueryService userQueryService, IUserCommandSer
         var entrepreneur = await entrepreneurQueryService.Handle(new GetEntrepreneurByUserIdQuery(userId));
         if (entrepreneur == null) return NotFound();
         var resource = EntrepreneurResourceFromEntityAssembler.ToResourceFromEntity(entrepreneur);
-        return Ok(resource);
-    }
-    
-    [HttpGet("{userId}/configurations")]
-    public async Task<IActionResult> GetConfigurationByUserId([FromRoute] int userId)
-    {
-        var configuration = await configurationQueryService.Handle(new GetConfigurationByUserIdQuery(userId));
-        if (configuration == null) return NotFound();
-        var resource = ConfigurationResourceFromEntityAssembler.ToResourceFromEntity(configuration);
         return Ok(resource);
     }
 }

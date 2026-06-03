@@ -3,7 +3,6 @@ using ACME.CargoExpress.API.Registration.Domain.Model.Aggregates;
 using ACME.CargoExpress.API.Registration.Domain.Model.Entities;
 using ACME.CargoExpress.API.Registration.Domain.Repositories;
 using ACME.CargoExpress.API.User.Domain.Model.Aggregates;
-using ACME.CargoExpress.API.User.Domain.Model.Entities;
 using Moq;
 
 namespace CargoApp.UnitTests;

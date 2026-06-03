@@ -1,7 +1,6 @@
 ﻿using ACME.CargoExpress.API.Shared.Infrastructure.Persistence.EFC.Configuration;
 using ACME.CargoExpress.API.Shared.Infrastructure.Persistence.EFC.Repositories;
 using ACME.CargoExpress.API.User.Domain.Model.Aggregates;
-using ACME.CargoExpress.API.User.Domain.Model.Entities;
 using ACME.CargoExpress.API.User.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
