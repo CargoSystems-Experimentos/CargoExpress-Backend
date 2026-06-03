@@ -33,6 +33,10 @@ public class User(string username, string passwordHash, string phone, bool role)
         DateTime.UtcNow,
         TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time"));
 
+    public DateTime ModifiedAt { get; private set; } = TimeZoneInfo.ConvertTimeFromUtc(
+        DateTime.UtcNow,
+        TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time"));
+
     /**
      * <summary>
      *     Update the username
@@ -62,6 +66,9 @@ public class User(string username, string passwordHash, string phone, bool role)
     public User UpdateState(bool state)
     {
         State = state;
+        ModifiedAt = TimeZoneInfo.ConvertTimeFromUtc(
+            DateTime.UtcNow,
+            TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time"));
         return this;
     }
 

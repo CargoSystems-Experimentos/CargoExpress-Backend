@@ -154,6 +154,7 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
         builder.Entity<IAM.Domain.Model.Aggregates.User>().Property(u => u.Phone).IsRequired().HasMaxLength(9);
         builder.Entity<IAM.Domain.Model.Aggregates.User>().HasIndex(u => u.Phone).IsUnique();
         builder.Entity<IAM.Domain.Model.Aggregates.User>().Property(u => u.CreatedAt).IsRequired();
+        builder.Entity<IAM.Domain.Model.Aggregates.User>().Property(u => u.ModifiedAt).IsRequired();
         builder.Entity<IAM.Domain.Model.Aggregates.User>().Property(u => u.Role).IsRequired();
         builder.Entity<IAM.Domain.Model.Aggregates.User>().Property(u => u.State).IsRequired();
 
