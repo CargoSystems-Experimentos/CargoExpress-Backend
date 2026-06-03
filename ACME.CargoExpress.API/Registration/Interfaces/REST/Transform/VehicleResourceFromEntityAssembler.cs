@@ -9,6 +9,7 @@ public static class VehicleResourceFromEntityAssembler
     {
         return new VehicleResource(
             entity.Id,
+            entity.Name,
             entity.Model,
             entity.Plate,
             entity.TractorPlate,

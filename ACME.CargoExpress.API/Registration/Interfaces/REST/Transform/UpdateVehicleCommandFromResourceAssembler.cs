@@ -9,6 +9,7 @@ public static class UpdateVehicleCommandFromResourceAssembler
     {
         return new UpdateVehicleCommand(
             vehicleId,
+            resource.Name,
             resource.Model,
             resource.Plate,
             resource.TractorPlate,

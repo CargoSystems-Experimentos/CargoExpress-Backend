@@ -8,6 +8,7 @@ public static class CreateVehicleCommandFromResourceAssembler
     public static CreateVehicleCommand ToCommandFromResource(CreateVehicleResource resource)
     {
         return new CreateVehicleCommand(
+            resource.Name,
             resource.Model,
             resource.Plate,
             resource.TractorPlate,

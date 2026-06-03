@@ -20,4 +20,10 @@ public class VehicleRepository(AppDbContext context): BaseRepository<Vehicle>(co
 		return await Context.Set<Vehicle>()
 			.FirstOrDefaultAsync(v => v.Plate == plate);
 	}
+
+	public async Task<Vehicle?> FindByNameAsync(string name)
+	{
+		return await Context.Set<Vehicle>()
+			.FirstOrDefaultAsync(v => v.Name == name);
+	}
 }

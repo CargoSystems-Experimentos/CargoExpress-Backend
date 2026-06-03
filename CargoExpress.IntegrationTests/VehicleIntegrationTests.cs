@@ -18,6 +18,7 @@ public class VehicleIntegrationTests : IntegrationTestBase
 
         var vehicle = new Vehicle
         {
+            Name = "Volvo Truck",
             Model = "Volvo FH16",
             Plate = "ABC123",
             TractorPlate = "TRC456",
@@ -30,6 +31,7 @@ public class VehicleIntegrationTests : IntegrationTestBase
 
         var retrieved = await vehicleRepository.FindByIdAsync(vehicle.Id);
         Assert.NotNull(retrieved);
+        Assert.Equal("Volvo Truck", retrieved.Name);
         Assert.Equal("Volvo FH16", retrieved.Model);
         Assert.Equal("ABC123", retrieved.Plate);
         Assert.Equal("TRC456", retrieved.TractorPlate);
@@ -48,6 +50,7 @@ public class VehicleIntegrationTests : IntegrationTestBase
 
         var vehicle1 = new Vehicle
         {
+            Name = "Mercedes Truck",
             Model = "Mercedes Actros",
             Plate = "XYZ001",
             TractorPlate = "TRC001",
@@ -56,6 +59,7 @@ public class VehicleIntegrationTests : IntegrationTestBase
         };
         var vehicle2 = new Vehicle
         {
+            Name = "Scania Truck",
             Model = "Scania R500",
             Plate = "XYZ002",
             TractorPlate = "TRC002",
@@ -84,6 +88,7 @@ public class VehicleIntegrationTests : IntegrationTestBase
 
         var vehicle = new Vehicle
         {
+            Name = "Old Truck",
             Model = "Old Model",
             Plate = "OLD001",
             TractorPlate = "TRC000",
@@ -94,6 +99,7 @@ public class VehicleIntegrationTests : IntegrationTestBase
         await vehicleRepository.AddAsync(vehicle);
         await unitOfWork.CompleteAsync();
 
+        vehicle.Name = "Updated Truck";
         vehicle.Model = "New Model";
         vehicle.MaxLoad = 15000f;
         vehicleRepository.Update(vehicle);
@@ -101,6 +107,7 @@ public class VehicleIntegrationTests : IntegrationTestBase
 
         var updated = await vehicleRepository.FindByIdAsync(vehicle.Id);
         Assert.NotNull(updated);
+        Assert.Equal("Updated Truck", updated.Name);
         Assert.Equal("New Model", updated.Model);
         Assert.Equal(15000f, updated.MaxLoad);
 

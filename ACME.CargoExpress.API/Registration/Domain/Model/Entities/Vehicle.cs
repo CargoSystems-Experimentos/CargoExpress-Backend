@@ -7,6 +7,7 @@ public class Vehicle
 {
     public Vehicle()
     {
+        Name = string.Empty;
         Model = string.Empty;
         Plate = string.Empty;
         TractorPlate = string.Empty;
@@ -16,8 +17,9 @@ public class Vehicle
         Trips = new List<Trip>();
     }
 
-    public Vehicle(string model, string plate, string tractorPlate, float maxLoad, float volume, int entrepreneurId, Entrepreneur entrepreneur)
+    public Vehicle(string name, string model, string plate, string tractorPlate, float maxLoad, float volume, int entrepreneurId, Entrepreneur entrepreneur)
     {
+        Name = name;
         Model = model;
         Plate = plate;
         TractorPlate = tractorPlate;
@@ -27,8 +29,9 @@ public class Vehicle
         Entrepreneur = entrepreneur;
         Trips = new List<Trip>();
     }
-    
+
     public int Id { get; set; }
+    public string Name { get; set; }
     public string Model { get; set; }
     public string Plate { get; set; }
     public string TractorPlate { get; set; }

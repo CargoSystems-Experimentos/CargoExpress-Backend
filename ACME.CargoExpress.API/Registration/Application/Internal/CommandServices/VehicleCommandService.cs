@@ -13,19 +13,36 @@ public class VehicleCommandService(IVehicleRepository vehicleRepository, IEntrep
 {
     public async Task<Vehicle?> Handle(CreateVehicleCommand command)
     {
+        if (string.IsNullOrWhiteSpace(command.Name))
+        {
+            throw new ArgumentException("El nombre del vehículo no puede estar vacío.");
+        }
+
+        if (command.Name.Length > 60)
+        {
+            throw new ArgumentException("El nombre del vehículo no puede exceder 60 caracteres.");
+        }
+
         var entrepreneur = await entrepreneurRepository.FindByIdAsync(command.EntrepreneurId);
         if (entrepreneur == null)
         {
-            throw new ArgumentException("EntrepreneurId not found.");
+            throw new ArgumentException("El ID del empresario no fue encontrado.");
+        }
+
+        var existingVehicleByName = await vehicleRepository.FindByNameAsync(command.Name);
+        if (existingVehicleByName != null)
+        {
+            throw new ArgumentException("El nombre del vehículo ya está registrado.");
         }
 
         var existingVehicle = await vehicleRepository.FindByPlateAsync(command.Plate);
         if (existingVehicle != null)
         {
-            throw new ArgumentException("Vehicle plate is already registered.");
+            throw new ArgumentException("La placa del vehículo ya está registrada.");
         }
 
         var vehicle = new Vehicle(
+            command.Name,
             command.Model,
             command.Plate,
             command.TractorPlate,
@@ -47,18 +64,35 @@ public class VehicleCommandService(IVehicleRepository vehicleRepository, IEntrep
             return null;
         }
 
+        if (string.IsNullOrWhiteSpace(command.Name))
+        {
+            throw new ArgumentException("El nombre del vehículo no puede estar vacío.");
+        }
+
+        if (command.Name.Length > 60)
+        {
+            throw new ArgumentException("El nombre del vehículo no puede exceder 60 caracteres.");
+        }
+
         var entrepreneur = await entrepreneurRepository.FindByIdAsync(command.EntrepreneurId);
         if (entrepreneur == null)
         {
-            throw new ArgumentException("EntrepreneurId not found.");
+            throw new ArgumentException("El ID del empresario no fue encontrado.");
+        }
+
+        var existingVehicleByName = await vehicleRepository.FindByNameAsync(command.Name);
+        if (existingVehicleByName != null && existingVehicleByName.Id != command.VehicleId)
+        {
+            throw new ArgumentException("El nombre del vehículo ya está registrado.");
         }
 
         var existingVehicle = await vehicleRepository.FindByPlateAsync(command.Plate);
         if (existingVehicle != null && existingVehicle.Id != command.VehicleId)
         {
-            throw new ArgumentException("Vehicle plate is already registered.");
+            throw new ArgumentException("La placa del vehículo ya está registrada.");
         }
 
+        vehicle.Name = command.Name;
         vehicle.Model = command.Model;
         vehicle.Plate = command.Plate;
         vehicle.TractorPlate = command.TractorPlate;
@@ -66,7 +100,7 @@ public class VehicleCommandService(IVehicleRepository vehicleRepository, IEntrep
         vehicle.Volume = command.Volume;
         vehicle.EntrepreneurId = command.EntrepreneurId;
         vehicle.Entrepreneur = entrepreneur;
-        
+
         await unitOfWork.CompleteAsync();
         return vehicle;
     }

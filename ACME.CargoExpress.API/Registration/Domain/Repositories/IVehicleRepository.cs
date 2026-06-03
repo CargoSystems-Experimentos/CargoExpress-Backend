@@ -7,4 +7,5 @@ public interface IVehicleRepository: IBaseRepository<Vehicle>
 {
 	Task<IEnumerable<Vehicle>> FindByEntrepreneurIdAsync(int entrepreneurId);
 	Task<Vehicle?> FindByPlateAsync(string plate);
+	Task<Vehicle?> FindByNameAsync(string name);
 }
