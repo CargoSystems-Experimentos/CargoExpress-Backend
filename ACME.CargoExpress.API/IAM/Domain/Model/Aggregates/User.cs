@@ -27,6 +27,8 @@ public class User(string username, string passwordHash, string phone, bool role)
 
     public bool Role { get; private set; } = role;
 
+    public bool State { get; private set; } = true;
+
     public DateTime CreatedAt { get; private set; } = TimeZoneInfo.ConvertTimeFromUtc(
         DateTime.UtcNow,
         TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time"));
@@ -56,7 +58,13 @@ public class User(string username, string passwordHash, string phone, bool role)
         PasswordHash = passwordHash;
         return this;
     }
-    
+
+    public User UpdateState(bool state)
+    {
+        State = state;
+        return this;
+    }
+
     public Client? Client { get; internal set; }
 
     public Entrepreneur? Entrepreneur { get; internal set; }

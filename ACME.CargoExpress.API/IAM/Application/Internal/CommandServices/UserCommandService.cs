@@ -106,6 +106,25 @@ public class UserCommandService(
         }
     }
 
+    public async Task<Domain.Model.Aggregates.User> Handle(UpdateUserStateCommand command)
+    {
+        var user = await userRepository.FindByIdAsync(command.UserId)
+            ?? throw new UserNotFoundException(command.UserId);
+
+        if (user.State == command.State)
+        {
+            if (command.State)
+                throw new UserAlreadyActiveException(command.UserId);
+            throw new UserAlreadyDeactivatedException(command.UserId);
+        }
+
+        user.UpdateState(command.State);
+        userRepository.Update(user);
+        await unitOfWork.CompleteAsync();
+
+        return user;
+    }
+
     private static void ValidateProfile(bool role, SignUpCommand command)
     {
         if (role == false) // CLIENT

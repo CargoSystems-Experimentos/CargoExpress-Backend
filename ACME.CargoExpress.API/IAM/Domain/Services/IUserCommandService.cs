@@ -29,4 +29,13 @@ public interface IUserCommandService
         * <returns>A confirmation message on successful creation.</returns>
         */
     Task Handle(SignUpCommand command);
+
+    /**
+        * <summary>
+        *     Handle update user state command
+        * </summary>
+        * <param name="command">The update user state command</param>
+        * <returns>The updated user</returns>
+        */
+    Task<Model.Aggregates.User> Handle(UpdateUserStateCommand command);
 }
