@@ -28,16 +28,20 @@ public class VehiclesController(IVehicleCommandService vehicleCommandService, IV
         }
     }
     
-    [HttpPut("{vehicleId}")]
+    [HttpPut("{vehicleId}/name")]
     public async Task<IActionResult> UpdateVehicle([FromBody] UpdateVehicleResource updateVehicleResource, [FromRoute] int vehicleId)
     {
         try
         {
             var updateVehicleCommand = UpdateVehicleCommandFromResourceAssembler.ToCommandFromResource(updateVehicleResource, vehicleId);
             var vehicle = await vehicleCommandService.Handle(updateVehicleCommand);
-            if (vehicle is null) return BadRequest(new { message = "No se pudo actualizar el vehículo." });
-            var resource = VehicleResourceFromEntityAssembler.ToResourceFromEntity(vehicle);
-            return Ok(resource);
+            if (vehicle is null) return BadRequest(new { message = "No se pudo actualizar el nombre del vehículo." });
+
+            return Ok(new
+            {
+                id = vehicle.Id,
+                name = vehicle.Name
+            });
         }
         catch (Exception e)
         {

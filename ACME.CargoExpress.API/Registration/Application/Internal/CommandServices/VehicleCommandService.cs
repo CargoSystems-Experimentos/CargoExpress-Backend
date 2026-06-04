@@ -87,41 +87,11 @@ public class VehicleCommandService(IVehicleRepository vehicleRepository, IEntrep
         if (command.Name.Length > 60)
             throw new VehicleNameTooLongException();
 
-        if (string.IsNullOrWhiteSpace(command.Model))
-            throw new InvalidVehicleModelException();
-
-        if (string.IsNullOrWhiteSpace(command.Plate))
-            throw new InvalidVehiclePlateException();
-
-        if (string.IsNullOrWhiteSpace(command.TractorPlate))
-            throw new InvalidVehicleTractorPlateException();
-
-        if (command.MaxLoad <= 0)
-            throw new InvalidVehicleMaxLoadException();
-
-        if (command.Volume <= 0)
-            throw new InvalidVehicleVolumeException();
-
-        var entrepreneur = await entrepreneurRepository.FindByIdAsync(command.EntrepreneurId);
-        if (entrepreneur == null)
-            throw new ArgumentException("El ID del empresario no fue encontrado.");
-
         var existingVehicleByName = await vehicleRepository.FindByNameAsync(command.Name);
         if (existingVehicleByName != null && existingVehicleByName.Id != command.VehicleId)
             throw new DuplicateVehicleNameException(command.Name);
 
-        var existingVehicle = await vehicleRepository.FindByPlateAsync(command.Plate);
-        if (existingVehicle != null && existingVehicle.Id != command.VehicleId)
-            throw new DuplicateVehiclePlateException(command.Plate);
-
         vehicle.Name = command.Name;
-        vehicle.Model = command.Model;
-        vehicle.Plate = command.Plate;
-        vehicle.TractorPlate = command.TractorPlate;
-        vehicle.MaxLoad = command.MaxLoad;
-        vehicle.Volume = command.Volume;
-        vehicle.EntrepreneurId = command.EntrepreneurId;
-        vehicle.Entrepreneur = entrepreneur;
 
         await unitOfWork.CompleteAsync();
         return vehicle;
