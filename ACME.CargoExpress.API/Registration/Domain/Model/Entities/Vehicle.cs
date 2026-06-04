@@ -17,7 +17,7 @@ public class Vehicle
         Trips = new List<Trip>();
     }
 
-    public Vehicle(string name, string model, string plate, string tractorPlate, float maxLoad, float volume, int entrepreneurId, Entrepreneur entrepreneur)
+    public Vehicle(string name, string model, string plate, string tractorPlate, decimal maxLoad, decimal volume, int entrepreneurId, Entrepreneur entrepreneur)
     {
         Name = name;
         Model = model;
@@ -35,8 +35,8 @@ public class Vehicle
     public string Model { get; set; }
     public string Plate { get; set; }
     public string TractorPlate { get; set; }
-    public float MaxLoad { get; set; }
-    public float Volume { get; set; }
+    public decimal MaxLoad { get; set; }
+    public decimal Volume { get; set; }
 
     public int EntrepreneurId { get; set; }
     public Entrepreneur Entrepreneur { get; set; }

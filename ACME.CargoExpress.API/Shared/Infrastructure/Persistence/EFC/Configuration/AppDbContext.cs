@@ -51,9 +51,10 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
         builder.Entity<Vehicle>().Property(v => v.Name).IsRequired().HasMaxLength(60);
         builder.Entity<Vehicle>().HasIndex(v => v.Name).IsUnique();
         builder.Entity<Vehicle>().Property(v => v.Model).IsRequired().HasMaxLength(100);
-        builder.Entity<Vehicle>().Property(v => v.TractorPlate).IsRequired().HasMaxLength(100);
-        builder.Entity<Vehicle>().Property(v => v.MaxLoad).IsRequired().HasPrecision(6, 2);
-        builder.Entity<Vehicle>().Property(v => v.Volume).IsRequired().HasPrecision(6, 2);
+        builder.Entity<Vehicle>().Property(v => v.Plate).IsRequired().HasMaxLength(20);
+        builder.Entity<Vehicle>().Property(v => v.TractorPlate).IsRequired().HasMaxLength(20);
+        builder.Entity<Vehicle>().Property(v => v.MaxLoad).IsRequired().HasPrecision(10, 2);
+        builder.Entity<Vehicle>().Property(v => v.Volume).IsRequired().HasPrecision(10, 2);
         builder.Entity<Vehicle>()
             .HasOne(v => v.Entrepreneur)
             .WithMany(e => e.Vehicles)

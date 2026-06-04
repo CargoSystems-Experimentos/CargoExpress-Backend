@@ -18,21 +18,13 @@ public class VehiclesController(IVehicleCommandService vehicleCommandService, IV
         {
             var createVehicleCommand = CreateVehicleCommandFromResourceAssembler.ToCommandFromResource(createVehicleResource);
             var vehicle = await vehicleCommandService.Handle(createVehicleCommand);
-            if (vehicle is null) return BadRequest();
+            if (vehicle is null) return BadRequest(new { message = "No se pudo crear el vehículo." });
             var resource = VehicleResourceFromEntityAssembler.ToResourceFromEntity(vehicle);
             return CreatedAtAction(nameof(GetVehicleById), new { vehicleId = resource.Id }, resource);
         }
         catch (Exception e)
         {
-            var exceptionDetails = new
-            {
-                e.Message,
-                e.StackTrace,
-                InnerExceptionMessage = e.InnerException?.Message,
-                InnerExceptionStackTrace = e.InnerException?.StackTrace
-            };
-            Console.WriteLine(exceptionDetails);
-            return BadRequest(new { message = "An error occurred while creating the vehicle.", details = exceptionDetails });
+            return BadRequest(new { message = e.Message });
         }
     }
     
@@ -43,21 +35,13 @@ public class VehiclesController(IVehicleCommandService vehicleCommandService, IV
         {
             var updateVehicleCommand = UpdateVehicleCommandFromResourceAssembler.ToCommandFromResource(updateVehicleResource, vehicleId);
             var vehicle = await vehicleCommandService.Handle(updateVehicleCommand);
-            if (vehicle is null) return BadRequest();
+            if (vehicle is null) return BadRequest(new { message = "No se pudo actualizar el vehículo." });
             var resource = VehicleResourceFromEntityAssembler.ToResourceFromEntity(vehicle);
             return Ok(resource);
         }
         catch (Exception e)
         {
-            var exceptionDetails = new
-            {
-                e.Message,
-                e.StackTrace,
-                InnerExceptionMessage = e.InnerException?.Message,
-                InnerExceptionStackTrace = e.InnerException?.StackTrace
-            };
-            Console.WriteLine(exceptionDetails);
-            return BadRequest(new { message = "An error occurred while updating the vehicle.", details = exceptionDetails });
+            return BadRequest(new { message = e.Message });
         }
     }
     
@@ -74,7 +58,7 @@ public class VehiclesController(IVehicleCommandService vehicleCommandService, IV
     public async Task<IActionResult> GetVehicleById([FromRoute] int vehicleId)
     {
         var vehicle = await vehicleQueryService.Handle(new GetVehicleByIdQuery(vehicleId));
-        if (vehicle == null) return NotFound();
+        if (vehicle == null) return NotFound(new { message = "No se ha encontrado el vehiculo"});
         var resource = VehicleResourceFromEntityAssembler.ToResourceFromEntity(vehicle);
         return Ok(resource);
     }
