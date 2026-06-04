@@ -19,6 +19,7 @@ public static class TripResourceFromEntityAssembler
             entity.DriverId,
             entity.VehicleId,
             entity.ClientId,
-            entity.EntrepreneurId);
+            entity.EntrepreneurId,
+            entity.State);
     }
 }

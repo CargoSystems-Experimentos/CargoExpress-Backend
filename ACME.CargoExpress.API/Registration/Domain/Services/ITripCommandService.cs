@@ -7,4 +7,5 @@ public interface ITripCommandService
 {
     Task<Trip?> Handle(CreateTripCommand createTripCommand);
     Task<Trip?> Handle(UpdateTripCommand updateTripCommand);
+    Task<Trip?> Handle(UpdateTripStateCommand updateTripStateCommand);
 }

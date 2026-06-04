@@ -12,4 +12,5 @@ public record TripResource(
     int DriverId,
     int VehicleId,
     int ClientId,
-    int EntrepreneurId);
+    int EntrepreneurId,
+    string State);

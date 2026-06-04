@@ -44,6 +44,22 @@ public class TripCommandService(
         return trip;
     }
 
+    public async Task<Trip?> Handle(UpdateTripStateCommand command)
+    {
+        var trip = await tripRepository.FindByIdAsync(command.TripId);
+        if (trip == null)
+            return null;
+
+        var normalizedState = command.State?.Trim().ToUpper();
+        if (normalizedState != "AWAITING" && normalizedState != "PROGRESS" &&
+            normalizedState != "FINISHED" && normalizedState != "CANCELED")
+            throw new ArgumentException("El estado del viaje no es válido. Los valores permitidos son: AWAITING, PROGRESS, FINISHED, CANCELED.");
+
+        trip.State = normalizedState;
+        await unitOfWork.CompleteAsync();
+        return trip;
+    }
+
     public async Task<Trip?> Handle(UpdateTripCommand command)
     {
         var trip = await tripRepository.FindByIdAsync(command.TripId);

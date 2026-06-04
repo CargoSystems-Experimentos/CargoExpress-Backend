@@ -74,7 +74,8 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
         builder.Entity<Trip>().Property(t => t.LoadDate).IsRequired();
         builder.Entity<Trip>().Property(t => t.UnloadLocation).IsRequired().HasMaxLength(100);
         builder.Entity<Trip>().Property(t => t.UnloadDate).IsRequired();
-        
+        builder.Entity<Trip>().Property(t => t.State).IsRequired().HasMaxLength(20).HasDefaultValue("AWAITING");
+
         //Expense Table
         builder.Entity<Expense>().HasKey(e => e.Id);
         builder.Entity<Expense>().Property(e => e.Id).IsRequired().ValueGeneratedOnAdd();

@@ -58,10 +58,12 @@ public class Trip
         Vehicle = vehicle;
         Client = client;
         Entrepreneur = entrepreneur;
+        State = "AWAITING";
     }
     
     public int Id { get; set; }
     public string Name { get; set; }
+    public string State { get; set; } = "AWAITING";
     public string Type { get; set; }
     public decimal Weight { get; set; }
     public string LoadLocation { get; set; }

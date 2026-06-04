@@ -1,4 +1,5 @@
-﻿using ACME.CargoExpress.API.Registration.Domain.Model.Queries;
+﻿using ACME.CargoExpress.API.Registration.Domain.Model.Commands;
+using ACME.CargoExpress.API.Registration.Domain.Model.Queries;
 using ACME.CargoExpress.API.Registration.Domain.Services;
 using ACME.CargoExpress.API.Registration.Interfaces.REST.Resources;
 using ACME.CargoExpress.API.Registration.Interfaces.REST.Transform;
@@ -46,6 +47,23 @@ public class TripsController(ITripQueryService tripQueryService, ITripCommandSer
         }
     }
     
+    [HttpPut("{tripId}/state")]
+    public async Task<IActionResult> UpdateTripState([FromBody] UpdateTripStateResource updateTripStateResource, [FromRoute] int tripId)
+    {
+        try
+        {
+            var command = new UpdateTripStateCommand(tripId, updateTripStateResource.State);
+            var trip = await tripCommandService.Handle(command);
+            if (trip is null) return NotFound(new { message = "No se ha encontrado el viaje." });
+            var resource = TripResourceFromEntityAssembler.ToResourceFromEntity(trip);
+            return Ok(resource);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+    }
+
     [HttpGet]
     public async Task<IActionResult> GetAllTrips()
     {
