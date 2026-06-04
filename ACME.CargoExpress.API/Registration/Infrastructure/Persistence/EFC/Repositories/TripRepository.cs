@@ -36,8 +36,8 @@ public class TripRepository : BaseRepository<Trip>, ITripRepository
             .ToListAsync();
     }
 
-    public async Task<Trip?> FindByNameAsync(string name)
+    public async Task<Trip?> FindByNameAsync(string name, int entrepreneurId)
     {
-        return await _context.Trips.FirstOrDefaultAsync(t => t.Name == name);
+        return await _context.Trips.FirstOrDefaultAsync(t => t.Name == name && t.EntrepreneurId == entrepreneurId);
     }
 }

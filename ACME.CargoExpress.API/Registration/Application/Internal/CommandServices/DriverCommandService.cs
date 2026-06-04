@@ -43,13 +43,13 @@ public class DriverCommandService(IDriverRepository driverRepository, IEntrepren
         if (entrepreneur == null)
             throw new ArgumentException("El ID del empresario no fue encontrado.");
 
-        var existingDriverByName = await driverRepository.FindByNameAsync(command.Name);
+        var existingDriverByName = await driverRepository.FindByNameAsync(command.Name, command.EntrepreneurId);
         if (existingDriverByName != null)
             throw new DuplicateDriverNameException();
 
-        var existingDriverByDni = await driverRepository.FindByDniAsync(command.Dni);
+        var existingDriverByDni = await driverRepository.FindByDniAsync(command.Dni, command.EntrepreneurId);
         if (existingDriverByDni != null)
-            throw new ArgumentException("El DNI del conductor ya está registrado.");
+            throw new ArgumentException("El DNI del conductor ya está registrado para este empresario.");
 
         var driver = new Driver(
             command.Name,
@@ -82,7 +82,7 @@ public class DriverCommandService(IDriverRepository driverRepository, IEntrepren
         if (command.ContactNumber.Length != 9)
             throw new InvalidDriverPhoneLengthException();
 
-        var existingDriverByName = await driverRepository.FindByNameAsync(command.Name);
+        var existingDriverByName = await driverRepository.FindByNameAsync(command.Name, driver.EntrepreneurId);
         if (existingDriverByName != null && existingDriverByName.Id != command.DriverId)
             throw new DuplicateDriverNameException();
 

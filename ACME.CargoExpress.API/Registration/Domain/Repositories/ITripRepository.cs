@@ -10,5 +10,5 @@ public interface ITripRepository : IBaseRepository<Trip>
     Task<IEnumerable<Trip>> FindByClientIdAsync(int clientId);
     Task<IEnumerable<Trip>> FindByEntrepreneurIdAsync(int entrepreneurId);
     Task<IEnumerable<Client>> FindClientsByEntrepreneurIdAsync(int entrepreneurId);
-    Task<Trip?> FindByNameAsync(string name);
+    Task<Trip?> FindByNameAsync(string name, int entrepreneurId);
 }

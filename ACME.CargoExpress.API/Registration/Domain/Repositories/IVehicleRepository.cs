@@ -6,6 +6,6 @@ namespace ACME.CargoExpress.API.Registration.Domain.Repositories;
 public interface IVehicleRepository: IBaseRepository<Vehicle>
 {
 	Task<IEnumerable<Vehicle>> FindByEntrepreneurIdAsync(int entrepreneurId);
-	Task<Vehicle?> FindByPlateAsync(string plate);
-	Task<Vehicle?> FindByNameAsync(string name);
+	Task<Vehicle?> FindByPlateAsync(string plate, int entrepreneurId);
+	Task<Vehicle?> FindByNameAsync(string name, int entrepreneurId);
 }

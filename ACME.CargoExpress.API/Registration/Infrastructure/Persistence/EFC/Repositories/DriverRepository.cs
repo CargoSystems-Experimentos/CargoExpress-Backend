@@ -15,15 +15,15 @@ public class DriverRepository(AppDbContext context) : BaseRepository<Driver>(con
 			.ToListAsync();
 	}
 
-	public async Task<Driver?> FindByDniAsync(string dni)
+	public async Task<Driver?> FindByDniAsync(string dni, int entrepreneurId)
 	{
 		return await Context.Set<Driver>()
-			.FirstOrDefaultAsync(d => d.Dni == dni);
+			.FirstOrDefaultAsync(d => d.Dni == dni && d.EntrepreneurId == entrepreneurId);
 	}
 
-	public async Task<Driver?> FindByNameAsync(string name)
+	public async Task<Driver?> FindByNameAsync(string name, int entrepreneurId)
 	{
 		return await Context.Set<Driver>()
-			.FirstOrDefaultAsync(d => d.Name == name);
+			.FirstOrDefaultAsync(d => d.Name == name && d.EntrepreneurId == entrepreneurId);
 	}
 }

@@ -52,11 +52,11 @@ public class VehicleCommandService(IVehicleRepository vehicleRepository, IEntrep
         if (entrepreneur == null)
             throw new ArgumentException("El ID del empresario no fue encontrado.");
 
-        var existingVehicleByName = await vehicleRepository.FindByNameAsync(command.Name);
+        var existingVehicleByName = await vehicleRepository.FindByNameAsync(command.Name, command.EntrepreneurId);
         if (existingVehicleByName != null)
             throw new DuplicateVehicleNameException(command.Name);
 
-        var existingVehicle = await vehicleRepository.FindByPlateAsync(command.Plate);
+        var existingVehicle = await vehicleRepository.FindByPlateAsync(command.Plate, command.EntrepreneurId);
         if (existingVehicle != null)
             throw new DuplicateVehiclePlateException(command.Plate);
 
@@ -87,7 +87,7 @@ public class VehicleCommandService(IVehicleRepository vehicleRepository, IEntrep
         if (command.Name.Length > 60)
             throw new VehicleNameTooLongException();
 
-        var existingVehicleByName = await vehicleRepository.FindByNameAsync(command.Name);
+        var existingVehicleByName = await vehicleRepository.FindByNameAsync(command.Name, vehicle.EntrepreneurId);
         if (existingVehicleByName != null && existingVehicleByName.Id != command.VehicleId)
             throw new DuplicateVehicleNameException(command.Name);
 

@@ -22,10 +22,6 @@ public class TripCommandService(
         ValidateFields(command.Name, command.Type, command.Weight, command.LoadLocation,
             command.LoadDate, command.UnloadLocation, command.UnloadDate);
 
-        var existingTrip = await tripRepository.FindByNameAsync(command.Name);
-        if (existingTrip != null)
-            throw new ArgumentException("El nombre del viaje ya está registrado.");
-
         var client = await clientRepository.FindByIdAsync(command.ClientId);
         if (client == null)
             throw new ArgumentException("El ID del cliente no fue encontrado.");
@@ -33,6 +29,10 @@ public class TripCommandService(
         var entrepreneur = await entrepreneurRepository.FindByIdAsync(command.EntrepreneurId);
         if (entrepreneur == null)
             throw new ArgumentException("El ID del empresario no fue encontrado.");
+
+        var existingTrip = await tripRepository.FindByNameAsync(command.Name, entrepreneur.Id);
+        if (existingTrip != null)
+            throw new ArgumentException("El nombre del viaje ya está registrado para este empresario.");
 
         var driver = await ValidateDriverAsync(command.DriverId, entrepreneur.Id);
         var vehicle = await ValidateVehicleAsync(command.VehicleId, entrepreneur.Id);
@@ -53,10 +53,6 @@ public class TripCommandService(
         ValidateFields(command.Name, command.Type, command.Weight, command.LoadLocation,
             command.LoadDate, command.UnloadLocation, command.UnloadDate);
 
-        var existingTrip = await tripRepository.FindByNameAsync(command.Name);
-        if (existingTrip != null && existingTrip.Id != command.TripId)
-            throw new ArgumentException("El nombre del viaje ya está registrado.");
-
         var client = await clientRepository.FindByIdAsync(command.ClientId);
         if (client == null)
             throw new ArgumentException("El ID del cliente no fue encontrado.");
@@ -64,6 +60,10 @@ public class TripCommandService(
         var entrepreneur = await entrepreneurRepository.FindByIdAsync(command.EntrepreneurId);
         if (entrepreneur == null)
             throw new ArgumentException("El ID del empresario no fue encontrado.");
+
+        var existingTrip = await tripRepository.FindByNameAsync(command.Name, entrepreneur.Id);
+        if (existingTrip != null && existingTrip.Id != command.TripId)
+            throw new ArgumentException("El nombre del viaje ya está registrado para este empresario.");
 
         var driver = await ValidateDriverAsync(command.DriverId, entrepreneur.Id);
         var vehicle = await ValidateVehicleAsync(command.VehicleId, entrepreneur.Id);

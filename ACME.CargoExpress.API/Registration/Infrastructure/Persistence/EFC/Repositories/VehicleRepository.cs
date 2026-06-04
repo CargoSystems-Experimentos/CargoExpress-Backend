@@ -15,15 +15,15 @@ public class VehicleRepository(AppDbContext context): BaseRepository<Vehicle>(co
 			.ToListAsync();
 	}
 
-	public async Task<Vehicle?> FindByPlateAsync(string plate)
+	public async Task<Vehicle?> FindByPlateAsync(string plate, int entrepreneurId)
 	{
 		return await Context.Set<Vehicle>()
-			.FirstOrDefaultAsync(v => v.Plate == plate);
+			.FirstOrDefaultAsync(v => v.Plate == plate && v.EntrepreneurId == entrepreneurId);
 	}
 
-	public async Task<Vehicle?> FindByNameAsync(string name)
+	public async Task<Vehicle?> FindByNameAsync(string name, int entrepreneurId)
 	{
 		return await Context.Set<Vehicle>()
-			.FirstOrDefaultAsync(v => v.Name == name);
+			.FirstOrDefaultAsync(v => v.Name == name && v.EntrepreneurId == entrepreneurId);
 	}
 }
