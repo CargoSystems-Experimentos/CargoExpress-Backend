@@ -36,8 +36,12 @@ public class DriversController(IDriverCommandService driverCommandService, IDriv
             var updateDriverCommand = UpdateDriverCommandFromResourceAssembler.ToCommandFromResource(updateDriverResource, driverId);
             var driver = await driverCommandService.Handle(updateDriverCommand);
             if (driver is null) return NotFound(new { message = "No se ha encontrado el conductor." });
-            var resource = DriverResourceFromEntityAssembler.ToResourceFromEntity(driver);
-            return Ok(resource);
+            return Ok(new
+            {
+                id = driver.Id,
+                name = driver.Name,
+                contactNumber = driver.ContactNumber
+            });
         }
         catch (Exception e)
         {

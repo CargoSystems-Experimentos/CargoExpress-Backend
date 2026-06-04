@@ -36,7 +36,6 @@ public class VehiclesController(IVehicleCommandService vehicleCommandService, IV
             var updateVehicleCommand = UpdateVehicleCommandFromResourceAssembler.ToCommandFromResource(updateVehicleResource, vehicleId);
             var vehicle = await vehicleCommandService.Handle(updateVehicleCommand);
             if (vehicle is null) return BadRequest(new { message = "No se pudo actualizar el nombre del vehículo." });
-
             return Ok(new
             {
                 id = vehicle.Id,

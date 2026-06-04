@@ -16,7 +16,7 @@ public class DriverCommandService(IDriverRepository driverRepository, IEntrepren
         if (string.IsNullOrWhiteSpace(name))
             throw new InvalidDriverNameException();
 
-        if (name.Length > 100)
+        if (name.Length > 60)
             throw new DriverNameTooLongException();
 
         if (!dni.All(char.IsDigit))
@@ -70,26 +70,24 @@ public class DriverCommandService(IDriverRepository driverRepository, IEntrepren
         if (driver == null)
             return null;
 
-        ValidateDriver(command.Name, command.Dni, command.License, command.ContactNumber);
+        if (string.IsNullOrWhiteSpace(command.Name))
+            throw new InvalidDriverNameException();
 
-        var entrepreneur = await entrepreneurRepository.FindByIdAsync(command.EntrepreneurId);
-        if (entrepreneur == null)
-            throw new ArgumentException("El ID del empresario no fue encontrado.");
+        if (command.Name.Length > 60)
+            throw new DriverNameTooLongException();
+
+        if (!command.ContactNumber.All(char.IsDigit))
+            throw new InvalidDriverPhoneFormatException();
+
+        if (command.ContactNumber.Length != 9)
+            throw new InvalidDriverPhoneLengthException();
 
         var existingDriverByName = await driverRepository.FindByNameAsync(command.Name);
         if (existingDriverByName != null && existingDriverByName.Id != command.DriverId)
             throw new DuplicateDriverNameException();
 
-        var existingDriverByDni = await driverRepository.FindByDniAsync(command.Dni);
-        if (existingDriverByDni != null && existingDriverByDni.Id != command.DriverId)
-            throw new ArgumentException("El DNI del conductor ya está registrado.");
-
         driver.Name = command.Name;
-        driver.Dni = command.Dni;
-        driver.License = command.License;
         driver.ContactNumber = command.ContactNumber;
-        driver.EntrepreneurId = command.EntrepreneurId;
-        driver.Entrepreneur = entrepreneur;
 
         await unitOfWork.CompleteAsync();
         return driver;
