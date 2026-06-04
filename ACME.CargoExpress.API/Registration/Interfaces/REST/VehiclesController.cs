@@ -49,6 +49,27 @@ public class VehiclesController(IVehicleCommandService vehicleCommandService, IV
         }
     }
     
+    [HttpPut("{vehicleId}/state")]
+    public async Task<IActionResult> UpdateVehicleState([FromBody] UpdateVehicleStateResource updateVehicleStateResource, [FromRoute] int vehicleId)
+    {
+        try
+        {
+            var updateVehicleStateCommand = UpdateVehicleStateCommandFromResourceAssembler.ToCommandFromResource(updateVehicleStateResource, vehicleId);
+            var vehicle = await vehicleCommandService.Handle(updateVehicleStateCommand);
+            if (vehicle is null) return NotFound(new { message = "No se ha encontrado el vehículo." });
+
+            return Ok(new
+            {
+                id = vehicle.Id,
+                state = vehicle.State
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+    }
+
     [HttpGet]
     public async Task<IActionResult> GetAllVehicles()
     {

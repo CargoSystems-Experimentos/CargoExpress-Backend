@@ -55,6 +55,7 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
         builder.Entity<Vehicle>().Property(v => v.TractorPlate).IsRequired().HasMaxLength(20);
         builder.Entity<Vehicle>().Property(v => v.MaxLoad).IsRequired().HasPrecision(10, 2);
         builder.Entity<Vehicle>().Property(v => v.Volume).IsRequired().HasPrecision(10, 2);
+        builder.Entity<Vehicle>().Property(v => v.State).IsRequired().HasMaxLength(20).HasDefaultValue("AVAILABLE");
         builder.Entity<Vehicle>()
             .HasOne(v => v.Entrepreneur)
             .WithMany(e => e.Vehicles)

@@ -13,6 +13,7 @@ public class Vehicle
         TractorPlate = string.Empty;
         MaxLoad = 0;
         Volume = 0;
+        State = "AVAILABLE";
         Entrepreneur = new Entrepreneur();
         Trips = new List<Trip>();
     }
@@ -25,6 +26,7 @@ public class Vehicle
         TractorPlate = tractorPlate;
         MaxLoad = maxLoad;
         Volume = volume;
+        State = "AVAILABLE";
         EntrepreneurId = entrepreneurId;
         Entrepreneur = entrepreneur;
         Trips = new List<Trip>();
@@ -37,6 +39,7 @@ public class Vehicle
     public string TractorPlate { get; set; }
     public decimal MaxLoad { get; set; }
     public decimal Volume { get; set; }
+    public string State { get; set; }
 
     public int EntrepreneurId { get; set; }
     public Entrepreneur Entrepreneur { get; set; }

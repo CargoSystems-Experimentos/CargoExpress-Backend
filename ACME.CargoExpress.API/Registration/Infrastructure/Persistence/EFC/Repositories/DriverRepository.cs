@@ -20,4 +20,10 @@ public class DriverRepository(AppDbContext context) : BaseRepository<Driver>(con
 		return await Context.Set<Driver>()
 			.FirstOrDefaultAsync(d => d.Dni == dni);
 	}
+
+	public async Task<Driver?> FindByNameAsync(string name)
+	{
+		return await Context.Set<Driver>()
+			.FirstOrDefaultAsync(d => d.Name == name);
+	}
 }

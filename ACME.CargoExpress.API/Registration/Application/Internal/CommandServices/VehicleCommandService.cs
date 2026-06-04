@@ -92,6 +92,23 @@ public class VehicleCommandService(IVehicleRepository vehicleRepository, IEntrep
             throw new DuplicateVehicleNameException(command.Name);
 
         vehicle.Name = command.Name;
+        vehicle.State = "AVAILABLE";
+
+        await unitOfWork.CompleteAsync();
+        return vehicle;
+    }
+
+    public async Task<Vehicle?> Handle(UpdateVehicleStateCommand command)
+    {
+        var vehicle = await vehicleRepository.FindByIdAsync(command.VehicleId);
+        if (vehicle == null)
+            return null;
+
+        var validStates = new[] { "AVAILABLE", "UNAVAILABLE", "INACTIVE" };
+        if (!validStates.Contains(command.State))
+            throw new InvalidVehicleStateException();
+
+        vehicle.State = command.State;
 
         await unitOfWork.CompleteAsync();
         return vehicle;

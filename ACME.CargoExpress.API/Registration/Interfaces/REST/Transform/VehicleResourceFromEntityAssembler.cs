@@ -15,6 +15,7 @@ public static class VehicleResourceFromEntityAssembler
             entity.TractorPlate,
             entity.MaxLoad,
             entity.Volume,
+            entity.State,
             entity.EntrepreneurId);
     }
 }

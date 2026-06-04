@@ -1,4 +1,4 @@
-﻿using ACME.CargoExpress.API.Registration.Domain.Model.Queries;
+using ACME.CargoExpress.API.Registration.Domain.Model.Queries;
 using ACME.CargoExpress.API.Registration.Domain.Services;
 using ACME.CargoExpress.API.Registration.Interfaces.REST.Resources;
 using ACME.CargoExpress.API.Registration.Interfaces.REST.Transform;
@@ -18,24 +18,16 @@ public class DriversController(IDriverCommandService driverCommandService, IDriv
         {
             var createDriverCommand = CreateDriverCommandFromResourceAssembler.ToCommandFromResource(createDriverResource);
             var driver = await driverCommandService.Handle(createDriverCommand);
-            if (driver is null) return BadRequest();
+            if (driver is null) return BadRequest(new { message = "No se pudo crear el conductor." });
             var resource = DriverResourceFromEntityAssembler.ToResourceFromEntity(driver);
             return CreatedAtAction(nameof(GetDriverById), new { driverId = resource.Id }, resource);
         }
         catch (Exception e)
         {
-            var exceptionDetails = new
-            {
-                e.Message,
-                e.StackTrace,
-                InnerExceptionMessage = e.InnerException?.Message,
-                InnerExceptionStackTrace = e.InnerException?.StackTrace
-            };
-            Console.WriteLine(exceptionDetails);
-            return BadRequest(new { message = "An error occurred while updating the driver.", details = exceptionDetails });
+            return BadRequest(new { message = e.Message });
         }
     }
-    
+
     [HttpPut("{driverId}")]
     public async Task<IActionResult> UpdateDriver([FromBody] UpdateDriverResource updateDriverResource, [FromRoute] int driverId)
     {
@@ -43,17 +35,16 @@ public class DriversController(IDriverCommandService driverCommandService, IDriv
         {
             var updateDriverCommand = UpdateDriverCommandFromResourceAssembler.ToCommandFromResource(updateDriverResource, driverId);
             var driver = await driverCommandService.Handle(updateDriverCommand);
-            if (driver is null) return BadRequest();
+            if (driver is null) return NotFound(new { message = "No se ha encontrado el conductor." });
             var resource = DriverResourceFromEntityAssembler.ToResourceFromEntity(driver);
             return Ok(resource);
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
-            return BadRequest(new { message = "An error occurred while updating the driver. " + e.Message });
+            return BadRequest(new { message = e.Message });
         }
     }
-    
+
     [HttpGet]
     public async Task<IActionResult> GetAllDrivers()
     {
@@ -62,12 +53,12 @@ public class DriversController(IDriverCommandService driverCommandService, IDriv
         var resources = drivers.Select(DriverResourceFromEntityAssembler.ToResourceFromEntity);
         return Ok(resources);
     }
-    
+
     [HttpGet("{driverId}")]
     public async Task<IActionResult> GetDriverById([FromRoute] int driverId)
     {
         var driver = await driverQueryService.Handle(new GetDriverByIdQuery(driverId));
-        if (driver == null) return NotFound();
+        if (driver == null) return NotFound(new { message = "No se ha encontrado el conductor." });
         var resource = DriverResourceFromEntityAssembler.ToResourceFromEntity(driver);
         return Ok(resource);
     }
@@ -79,5 +70,4 @@ public class DriversController(IDriverCommandService driverCommandService, IDriv
         var resources = drivers.Select(DriverResourceFromEntityAssembler.ToResourceFromEntity);
         return Ok(resources);
     }
-    
 }
