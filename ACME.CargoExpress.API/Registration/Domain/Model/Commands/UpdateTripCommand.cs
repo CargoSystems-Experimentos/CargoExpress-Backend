@@ -4,7 +4,7 @@ public record UpdateTripCommand(
     int TripId,
     string Name,
     string Type,
-    int Weight,
+    decimal Weight,
     string LoadLocation,
     DateTime LoadDate,
     string UnloadLocation,
@@ -12,5 +12,4 @@ public record UpdateTripCommand(
     int DriverId,
     int VehicleId,
     int ClientId,
-    int EntrepreneurId,
-    string EvidenceImg);
+    int EntrepreneurId);

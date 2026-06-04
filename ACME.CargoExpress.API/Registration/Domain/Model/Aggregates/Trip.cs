@@ -19,11 +19,10 @@ public class Trip
         Vehicle = new Vehicle();
         Client = new Client();
         Entrepreneur = new Entrepreneur();
-        EvidenceImg = string.Empty;
     }
-    
-    public Trip(string name, string type, int weight, string loadLocation, DateTime loadDate, string unloadLocation, DateTime unloadDate,
-        int driverId, int vehicleId, int clientId, int entrepreneurId, string evidenceImg, Driver driver, Vehicle vehicle, Client client, Entrepreneur entrepreneur)
+
+    public Trip(string name, string type, decimal weight, string loadLocation, DateTime loadDate, string unloadLocation, DateTime unloadDate,
+        int driverId, int vehicleId, int clientId, int entrepreneurId, Driver driver, Vehicle vehicle, Client client, Entrepreneur entrepreneur)
     {
         Name = name;
         Type = type;
@@ -36,7 +35,6 @@ public class Trip
         VehicleId = vehicleId;
         ClientId = clientId;
         EntrepreneurId = entrepreneurId;
-        EvidenceImg = evidenceImg ?? string.Empty;
         Driver = driver;
         Vehicle = vehicle;
         Client = client;
@@ -56,7 +54,6 @@ public class Trip
         VehicleId = command.VehicleId;
         ClientId = command.ClientId;
         EntrepreneurId = command.EntrepreneurId;
-        EvidenceImg = command.EvidenceImg ?? string.Empty;
         Driver = driver;
         Vehicle = vehicle;
         Client = client;
@@ -66,15 +63,12 @@ public class Trip
     public int Id { get; set; }
     public string Name { get; set; }
     public string Type { get; set; }
-    public int Weight { get; set; }
+    public decimal Weight { get; set; }
     public string LoadLocation { get; set; }
     public DateTime LoadDate { get; set; }
     public string UnloadLocation { get; set; }
     public DateTime UnloadDate { get; set; }
 
-    // NEW: evidence link moved into Trip
-    public string EvidenceImg { get; set; }
-    
     public Driver Driver { get; set; }
     public Vehicle Vehicle { get; set; }
     public int DriverId { get; set; }

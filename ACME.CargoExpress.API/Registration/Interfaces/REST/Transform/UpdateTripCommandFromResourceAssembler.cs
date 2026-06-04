@@ -19,7 +19,6 @@ public static class UpdateTripCommandFromResourceAssembler
             resource.DriverId,
             resource.VehicleId,
             resource.ClientId,
-            resource.EntrepreneurId,
-            resource.EvidenceImg);
+            resource.EntrepreneurId);
     }
 }

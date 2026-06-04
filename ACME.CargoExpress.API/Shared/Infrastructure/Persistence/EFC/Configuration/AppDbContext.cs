@@ -67,14 +67,13 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
         //Trip Table
         builder.Entity<Trip>().HasKey(t => t.Id);
         builder.Entity<Trip>().Property(t => t.Id).IsRequired().ValueGeneratedOnAdd();
-        builder.Entity<Trip>().Property(t => t.Name).IsRequired().HasMaxLength(100);
-        builder.Entity<Trip>().Property(t => t.Type).IsRequired().HasMaxLength(50);
-        builder.Entity<Trip>().Property(t => t.Weight).IsRequired();
+        builder.Entity<Trip>().Property(t => t.Name).IsRequired().HasMaxLength(60);
+        builder.Entity<Trip>().Property(t => t.Type).IsRequired().HasMaxLength(60);
+        builder.Entity<Trip>().Property(t => t.Weight).IsRequired().HasColumnType("decimal(10,2)");
         builder.Entity<Trip>().Property(t => t.LoadLocation).IsRequired().HasMaxLength(100);
         builder.Entity<Trip>().Property(t => t.LoadDate).IsRequired();
         builder.Entity<Trip>().Property(t => t.UnloadLocation).IsRequired().HasMaxLength(100);
         builder.Entity<Trip>().Property(t => t.UnloadDate).IsRequired();
-        builder.Entity<Trip>().Property(t => t.EvidenceImg);
         
         //Expense Table
         builder.Entity<Expense>().HasKey(e => e.Id);

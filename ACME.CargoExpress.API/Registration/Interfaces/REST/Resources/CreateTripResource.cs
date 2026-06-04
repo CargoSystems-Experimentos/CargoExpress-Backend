@@ -3,7 +3,7 @@
 public record CreateTripResource(
     string Name,
     string Type,
-    int Weight,
+    decimal Weight,
     string LoadLocation,
     DateTime LoadDate,
     string UnloadLocation,
@@ -11,5 +11,4 @@ public record CreateTripResource(
     int DriverId,
     int VehicleId,
     int ClientId,
-    int EntrepreneurId,
-    string EvidenceImg);
+    int EntrepreneurId);

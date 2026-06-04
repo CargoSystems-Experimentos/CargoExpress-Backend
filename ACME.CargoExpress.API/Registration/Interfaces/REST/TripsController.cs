@@ -18,22 +18,14 @@ public class TripsController(ITripQueryService tripQueryService, ITripCommandSer
         {
             var createTripCommand = CreateTripCommandFromResourceAssembler.ToCommandFromResource(createTripResource);
             var trip = await tripCommandService.Handle(createTripCommand);
-            if (trip is null) return BadRequest();
+            if (trip is null) return BadRequest(new { message = "No se pudo crear el viaje." });
             var resource = TripResourceFromEntityAssembler.ToResourceFromEntity(trip);
             return CreatedAtAction(nameof(GetTripById), new { tripId = resource.Id }, resource);
-            
+
         }
         catch (Exception e)
         {
-            var exceptionDetails = new
-            {
-                e.Message,
-                e.StackTrace,
-                InnerExceptionMessage = e.InnerException?.Message,
-                InnerExceptionStackTrace = e.InnerException?.StackTrace
-            };
-            Console.WriteLine(exceptionDetails);
-            return BadRequest(new { message = "An error occurred while creating the trip.", details = exceptionDetails });
+            return BadRequest(new { message = e.Message });
         }
     }
     
@@ -44,21 +36,13 @@ public class TripsController(ITripQueryService tripQueryService, ITripCommandSer
         {
             var updateTripCommand = UpdateTripCommandFromResourceAssembler.ToCommandFromResource(updateTripResource, tripId);
             var trip = await tripCommandService.Handle(updateTripCommand);
-            if (trip is null) return BadRequest();
+            if (trip is null) return NotFound(new { message = "No se ha encontrado el viaje." });
             var resource = TripResourceFromEntityAssembler.ToResourceFromEntity(trip);
             return Ok(resource);
         }
         catch (Exception e)
         {
-            var exceptionDetails = new
-            {
-                e.Message,
-                e.StackTrace,
-                InnerExceptionMessage = e.InnerException?.Message,
-                InnerExceptionStackTrace = e.InnerException?.StackTrace
-            };
-            Console.WriteLine(exceptionDetails);
-            return BadRequest(new { message = "An error occurred while updating the trip.", details = exceptionDetails });
+            return BadRequest(new { message = e.Message });
         }
     }
     
