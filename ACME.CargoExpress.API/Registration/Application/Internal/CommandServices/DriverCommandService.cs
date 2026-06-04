@@ -88,6 +88,23 @@ public class DriverCommandService(IDriverRepository driverRepository, IEntrepren
 
         driver.Name = command.Name;
         driver.ContactNumber = command.ContactNumber;
+        driver.State = "AVAILABLE";
+
+        await unitOfWork.CompleteAsync();
+        return driver;
+    }
+
+    public async Task<Driver?> Handle(UpdateDriverStateCommand command)
+    {
+        var driver = await driverRepository.FindByIdAsync(command.DriverId);
+        if (driver == null)
+            return null;
+
+        var validStates = new[] { "AVAILABLE", "UNAVAILABLE", "INACTIVE" };
+        if (!validStates.Contains(command.State))
+            throw new InvalidDriverStateException();
+
+        driver.State = command.State;
 
         await unitOfWork.CompleteAsync();
         return driver;

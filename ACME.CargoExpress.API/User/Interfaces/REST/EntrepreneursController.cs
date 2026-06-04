@@ -15,7 +15,9 @@ namespace ACME.CargoExpress.API.User.Interfaces.REST;
 public class EntrepreneursController(
     IEntrepreneurQueryService entrepreneurQueryService,
     IEntrepreneurCommandService entrepreneurCommandService,
-    ITripQueryService tripQueryService) : ControllerBase
+    ITripQueryService tripQueryService,
+    IVehicleQueryService vehicleQueryService,
+    IDriverQueryService driverQueryService) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAllEntrepreneurs()
@@ -89,6 +91,22 @@ public class EntrepreneursController(
     {
         var clients = await tripQueryService.Handle(new GetClientsByEntrepreneurId(entrepreneurId));
         var resources = clients.Select(ClientResourceFromEntityAssembler.ToResourceFromEntity);
+        return Ok(resources);
+    }
+
+    [HttpGet("{entrepreneurId}/vehicles")]
+    public async Task<IActionResult> GetVehiclesByEntrepreneurId([FromRoute] int entrepreneurId)
+    {
+        var vehicles = await vehicleQueryService.Handle(new GetVehiclesByEntrepreneurIdQuery(entrepreneurId));
+        var resources = vehicles.Select(VehicleResourceFromEntityAssembler.ToResourceFromEntity);
+        return Ok(resources);
+    }
+
+    [HttpGet("{entrepreneurId}/drivers")]
+    public async Task<IActionResult> GetDriversByEntrepreneurId([FromRoute] int entrepreneurId)
+    {
+        var drivers = await driverQueryService.Handle(new GetDriversByEntrepreneurIdQuery(entrepreneurId));
+        var resources = drivers.Select(DriverResourceFromEntityAssembler.ToResourceFromEntity);
         return Ok(resources);
     }
 }

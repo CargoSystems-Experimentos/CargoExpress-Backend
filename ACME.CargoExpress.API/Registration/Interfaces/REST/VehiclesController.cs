@@ -87,13 +87,4 @@ public class VehiclesController(IVehicleCommandService vehicleCommandService, IV
         return Ok(resource);
     }
 
-    [HttpGet("entrepreneur/{entrepreneurId}")]
-    public async Task<IActionResult> GetVehiclesByEntrepreneurId([FromRoute] int entrepreneurId)
-    {
-        var vehicles = await vehicleQueryService.Handle(new GetVehiclesByEntrepreneurIdQuery(entrepreneurId));
-        var resources = vehicles.Select(VehicleResourceFromEntityAssembler.ToResourceFromEntity);
-        return Ok(resources);
-    }
-    
-    
 }

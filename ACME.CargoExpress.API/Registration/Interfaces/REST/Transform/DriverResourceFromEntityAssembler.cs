@@ -13,6 +13,7 @@ public static class DriverResourceFromEntityAssembler
             entity.Dni,
             entity.License,
             entity.ContactNumber,
+            entity.State,
             entity.EntrepreneurId);
     }
 }

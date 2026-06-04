@@ -49,6 +49,26 @@ public class DriversController(IDriverCommandService driverCommandService, IDriv
         }
     }
 
+    [HttpPut("{driverId}/state")]
+    public async Task<IActionResult> UpdateDriverState([FromBody] UpdateDriverStateResource updateDriverStateResource, [FromRoute] int driverId)
+    {
+        try
+        {
+            var updateDriverStateCommand = UpdateDriverStateCommandFromResourceAssembler.ToCommandFromResource(updateDriverStateResource, driverId);
+            var driver = await driverCommandService.Handle(updateDriverStateCommand);
+            if (driver is null) return NotFound(new { message = "No se ha encontrado el conductor." });
+            return Ok(new
+            {
+                id = driver.Id,
+                state = driver.State
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+    }
+
     [HttpGet]
     public async Task<IActionResult> GetAllDrivers()
     {
@@ -67,11 +87,4 @@ public class DriversController(IDriverCommandService driverCommandService, IDriv
         return Ok(resource);
     }
 
-    [HttpGet("entrepreneur/{entrepreneurId}")]
-    public async Task<IActionResult> GetDriversByEntrepreneurId([FromRoute] int entrepreneurId)
-    {
-        var drivers = await driverQueryService.Handle(new GetDriversByEntrepreneurIdQuery(entrepreneurId));
-        var resources = drivers.Select(DriverResourceFromEntityAssembler.ToResourceFromEntity);
-        return Ok(resources);
-    }
 }

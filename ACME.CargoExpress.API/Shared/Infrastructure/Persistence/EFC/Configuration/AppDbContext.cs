@@ -39,6 +39,7 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
         builder.Entity<Driver>().Property(d => d.Dni).IsRequired().HasMaxLength(8);
         builder.Entity<Driver>().Property(d => d.License).IsRequired().HasMaxLength(10);
         builder.Entity<Driver>().Property(d => d.ContactNumber).IsRequired().HasMaxLength(9);
+        builder.Entity<Driver>().Property(d => d.State).IsRequired().HasMaxLength(20).HasDefaultValue("AVAILABLE");
         builder.Entity<Driver>()
             .HasOne(d => d.Entrepreneur)
             .WithMany(e => e.Drivers)

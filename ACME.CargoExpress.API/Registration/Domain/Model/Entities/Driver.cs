@@ -11,6 +11,7 @@ public class Driver
         Dni = string.Empty;
         License = string.Empty;
         ContactNumber = string.Empty;
+        State = "AVAILABLE";
         Entrepreneur = new Entrepreneur();
         Trips = new List<Trip>();
     }
@@ -21,16 +22,18 @@ public class Driver
         Dni = dni;
         License = license;
         ContactNumber = contactNumber;
+        State = "AVAILABLE";
         EntrepreneurId = entrepreneurId;
         Entrepreneur = entrepreneur;
         Trips = new List<Trip>();
     }
-    
+
     public int Id { get; set; }
     public string Name { get; set; }
     public string Dni { get; set; }
     public string License { get; set; }
     public string ContactNumber { get; set; }
+    public string State { get; set; }
 
     public int EntrepreneurId { get; set; }
     public Entrepreneur Entrepreneur { get; set; }
