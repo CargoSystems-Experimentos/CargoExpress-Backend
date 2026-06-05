@@ -40,7 +40,6 @@ public class OngoingTripCommandService(IOngoingTripRepository ongoingTripReposit
         ongoingTrip.Longitude = command.Longitude;
         ongoingTrip.Speed = command.Speed;
         ongoingTrip.Distance = command.Distance;
-        ongoingTrip.State = command.State;
         
         await unitOfWork.CompleteAsync();
         return ongoingTrip;

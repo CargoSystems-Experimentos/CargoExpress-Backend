@@ -6,15 +6,15 @@ using ACME.CargoExpress.API.Shared.Domain.Repositories;
 
 namespace ACME.CargoExpress.API.Registration.Application.Internal.CommandServices;
 
-public class AlertCommandService(IAlertRepository alertRepository, IOngoingTripRepository ongoingTripRepository, IUnitOfWork unitOfWork)
-    :IAlertCommandService
+public class AlertCommandService(IAlertRepository alertRepository, ITripRepository tripRepository, IUnitOfWork unitOfWork)
+    : IAlertCommandService
 {
     public async Task<Alert?> Handle(CreateAlertCommand command)
     {
-        var ongoingTrip = await ongoingTripRepository.FindByIdAsync(command.OngoingTripId);
-        if (ongoingTrip == null)
+        var trip = await tripRepository.FindByIdAsync(command.TripId);
+        if (trip == null)
         {
-            throw new ArgumentException("OngoingTripId not found.");
+            throw new ArgumentException("TripId not found.");
         }
 
         var existingAlert = await alertRepository.FindByTitleAsync(command.Title);
@@ -23,7 +23,7 @@ public class AlertCommandService(IAlertRepository alertRepository, IOngoingTripR
             throw new ArgumentException("Alert title is already registered.");
         }
 
-        var alert = new Alert(command, ongoingTrip);
+        var alert = new Alert(command, trip);
         await alertRepository.AddAsync(alert);
         await unitOfWork.CompleteAsync();
         return alert;

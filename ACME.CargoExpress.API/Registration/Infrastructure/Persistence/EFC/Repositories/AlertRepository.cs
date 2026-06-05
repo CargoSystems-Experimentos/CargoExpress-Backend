@@ -14,9 +14,9 @@ public class AlertRepository : BaseRepository<Alert>, IAlertRepository
     {
         _context = context;
     }
-    public async Task<IEnumerable<Alert>> FindByOngoingTripIdAsync(int ongoingTripId)
+    public async Task<IEnumerable<Alert>> FindByTripIdAsync(int tripId)
     {
-        return await _context.Alerts.Where(a => a.OngoingTripId == ongoingTripId).ToListAsync();
+        return await _context.Alerts.Where(a => a.TripId == tripId).ToListAsync();
     }
 
     public async Task<Alert?> FindByTitleAsync(string title)

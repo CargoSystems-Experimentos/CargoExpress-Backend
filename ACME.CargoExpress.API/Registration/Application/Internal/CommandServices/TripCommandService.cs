@@ -39,6 +39,9 @@ public class TripCommandService(
 
         var trip = new Trip(command, driver, vehicle, client, entrepreneur);
 
+        driver.State = "UNAVAILABLE";
+        vehicle.State = "UNAVAILABLE";
+
         await tripRepository.AddAsync(trip);
         await unitOfWork.CompleteAsync();
         return trip;

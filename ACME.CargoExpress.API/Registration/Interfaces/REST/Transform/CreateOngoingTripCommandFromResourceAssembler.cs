@@ -8,8 +8,6 @@ public static class CreateOngoingTripCommandFromResourceAssembler
 {
     public static CreateOngoingTripCommand ToCommandFromResource(CreateOngoingTripResource resource)
     {
-        // Mantener el valor como string; si es null/empty usar PENDIENTE
-        var state = string.IsNullOrWhiteSpace(resource.State) ? "PENDIENTE" : resource.State.Replace(" ", "_").ToUpperInvariant();
-        return new CreateOngoingTripCommand(state, resource.Latitude, resource.Longitude, resource.Speed, resource.Distance, resource.TripId);
+        return new CreateOngoingTripCommand(resource.Latitude, resource.Longitude, resource.Speed, resource.Distance, resource.TripId);
     }
 }

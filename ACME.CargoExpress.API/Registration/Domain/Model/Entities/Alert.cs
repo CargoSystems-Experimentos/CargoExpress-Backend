@@ -7,33 +7,33 @@ public class Alert
 {
     public Alert()
     {
-        Title= string.Empty;
+        Title = string.Empty;
         Description = string.Empty;
         Date = DateTime.Now;
-        OngoingTrip = new OngoingTrip();
+        Trip = new Trip();
     }
-    
-    public Alert(string title, string description, DateTime date, int ongoingTripId, OngoingTrip ongoingTrip)
+
+    public Alert(string title, string description, DateTime date, int tripId, Trip trip)
     {
         Title = title;
         Description = description;
         Date = date;
-        OngoingTripId = ongoingTripId;
-        OngoingTrip = ongoingTrip;
+        TripId = tripId;
+        Trip = trip;
     }
 
-    public Alert(CreateAlertCommand command, OngoingTrip ongoingTrip)
+    public Alert(CreateAlertCommand command, Trip trip)
     {
         Title = command.Title;
         Description = command.Description;
         Date = command.Date;
-        OngoingTrip = ongoingTrip;
+        Trip = trip;
     }
-    
+
     public int Id { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
     public DateTime Date { get; set; }
-    public int OngoingTripId { get; set; }
-    public OngoingTrip OngoingTrip { get; }
+    public int TripId { get; set; }
+    public Trip Trip { get; }
 }

@@ -6,6 +6,6 @@ public static class OngoingTripResourceFromEntityAssembler
 {
     public static OngoingTripResource ToResourceFromEntity(OngoingTrip entity)
     {
-        return new OngoingTripResource(entity.Id, entity.State, entity.Latitude, entity.Longitude, entity.Speed, entity.Distance, entity.TripId);
+        return new OngoingTripResource(entity.Id, entity.Latitude, entity.Longitude, entity.Speed, entity.Distance, entity.TripId);
     }
 }

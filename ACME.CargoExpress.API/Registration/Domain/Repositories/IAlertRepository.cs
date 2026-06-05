@@ -5,6 +5,6 @@ namespace ACME.CargoExpress.API.Registration.Domain.Repositories;
 
 public interface IAlertRepository : IBaseRepository<Alert>
 {
-    Task<IEnumerable<Alert>> FindByOngoingTripIdAsync(int ongoingTripId);
+    Task<IEnumerable<Alert>> FindByTripIdAsync(int tripId);
     Task<Alert?> FindByTitleAsync(string title);
 }

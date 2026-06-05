@@ -100,7 +100,6 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
         builder.Entity<OngoingTrip>().Property(ot => ot.Longitude).IsRequired();
         builder.Entity<OngoingTrip>().Property(ot => ot.Speed).IsRequired();
         builder.Entity<OngoingTrip>().Property(ot => ot.Distance).IsRequired();
-        builder.Entity<OngoingTrip>().Property(ot => ot.State).IsRequired().HasMaxLength(20);
         
         //Trips Table Relationships
         builder.Entity<Trip>()
@@ -137,10 +136,10 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
         
         //Alerts Table Relationships
         builder.Entity<Alert>()
-            .HasOne(a => a.OngoingTrip)
-            .WithMany()
-            .HasForeignKey(a => a.OngoingTripId)
-            .HasPrincipalKey(ot => ot.Id);
+            .HasOne(a => a.Trip)
+            .WithMany(t => t.Alerts)
+            .HasForeignKey(a => a.TripId)
+            .HasPrincipalKey(t => t.Id);
         
         //OngoingTrips Table Relationships
         builder.Entity<OngoingTrip>()

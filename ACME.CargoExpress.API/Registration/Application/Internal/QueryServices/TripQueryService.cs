@@ -27,8 +27,8 @@ public class TripQueryService(ITripRepository tripRepository, IAlertRepository a
     }
     
     public async Task<IEnumerable<Alert>> Handle(GetAlertsByOngoingTripIdQuery query)
-    { 
-        return await alertRepository.FindByOngoingTripIdAsync(query.OngoingTripId);
+    {
+        return await alertRepository.FindByTripIdAsync(query.TripId);
     }
     
     public async Task<OngoingTrip?> Handle(GetOngGoingTripByIdQuery query)
