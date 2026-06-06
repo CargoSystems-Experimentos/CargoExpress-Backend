@@ -17,7 +17,7 @@ public class Expense
         Trip = new Trip();
     }
 
-    public Expense(int fuelAmount, string fuelDescription, int viaticsAmount, string viaticsDescription, int tollsAmount, string tollsDescription, int tripId, Trip trip)
+    public Expense(decimal fuelAmount, string fuelDescription, decimal viaticsAmount, string viaticsDescription, decimal tollsAmount, string tollsDescription, int tripId, Trip trip)
     {
         FuelAmount = fuelAmount;
         FuelDescription = fuelDescription;
@@ -43,11 +43,11 @@ public class Expense
     }
 
     public int Id { get; set; }
-    public int FuelAmount { get; set; }
+    public decimal FuelAmount { get; set; }
     public string FuelDescription { get; set; }
-    public int ViaticsAmount { get; set; }
+    public decimal ViaticsAmount { get; set; }
     public string ViaticsDescription { get; set; }
-    public int TollsAmount { get; set; }
+    public decimal TollsAmount { get; set; }
     public string TollsDescription { get; set; }
     public bool State { get; set; }
 

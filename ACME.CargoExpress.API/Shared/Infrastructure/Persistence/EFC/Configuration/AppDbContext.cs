@@ -79,12 +79,12 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
         //Expense Table
         builder.Entity<Expense>().HasKey(e => e.Id);
         builder.Entity<Expense>().Property(e => e.Id).IsRequired().ValueGeneratedOnAdd();
-        builder.Entity<Expense>().Property(e => e.FuelAmount).IsRequired();
-        builder.Entity<Expense>().Property(e => e.FuelDescription).IsRequired();
-        builder.Entity<Expense>().Property(e => e.ViaticsAmount).IsRequired();
-        builder.Entity<Expense>().Property(e => e.ViaticsDescription).IsRequired();
-        builder.Entity<Expense>().Property(e => e.TollsAmount).IsRequired();
-        builder.Entity<Expense>().Property(e => e.TollsDescription).IsRequired();
+        builder.Entity<Expense>().Property(e => e.FuelAmount).IsRequired().HasColumnType("decimal(10,2)");
+        builder.Entity<Expense>().Property(e => e.FuelDescription).IsRequired().HasMaxLength(200);
+        builder.Entity<Expense>().Property(e => e.ViaticsAmount).IsRequired().HasColumnType("decimal(10,2)");
+        builder.Entity<Expense>().Property(e => e.ViaticsDescription).IsRequired().HasMaxLength(200);
+        builder.Entity<Expense>().Property(e => e.TollsAmount).IsRequired().HasColumnType("decimal(10,2)");
+        builder.Entity<Expense>().Property(e => e.TollsDescription).IsRequired().HasMaxLength(200);
         builder.Entity<Expense>().Property(e => e.State).IsRequired().HasDefaultValue(true);
 
         //Alert Table

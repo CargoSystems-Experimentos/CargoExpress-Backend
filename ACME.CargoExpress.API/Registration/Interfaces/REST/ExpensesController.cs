@@ -1,4 +1,4 @@
-﻿using ACME.CargoExpress.API.Registration.Domain.Model.Commands;
+using ACME.CargoExpress.API.Registration.Domain.Model.Commands;
 using ACME.CargoExpress.API.Registration.Domain.Model.Queries;
 using ACME.CargoExpress.API.Registration.Domain.Services;
 using ACME.CargoExpress.API.Registration.Interfaces.REST.Resources;
@@ -21,29 +21,16 @@ public class ExpensesController(IExpenseCommandService expenseCommandService, IE
         {
             var createExpenseCommand = CreateExpenseCommandFromResourceAssembler.ToCommandFromResource(createExpenseResource);
             var expense = await expenseCommandService.Handle(createExpenseCommand);
-            if (expense is null) return BadRequest();
+            if (expense is null) return BadRequest(new { message = "No se pudo crear el gasto." });
             var resource = ExpenseResourceFromEntityAssembler.ToResourceFromEntity(expense);
             return CreatedAtAction(nameof(GetExpenseById), new { expenseId = resource.Id }, resource);
         }
-        catch (InvalidOperationException e)
-        {
-            // Handle the case where an Expense with the same TripId already exists
-            return BadRequest(new {message = "An Expense with the same TripId already exists."});
-        }
         catch (Exception e)
         {
-            var exceptionDetails = new
-            {
-                e.Message,
-                e.StackTrace,
-                InnerExceptionMessage = e.InnerException?.Message,
-                InnerExceptionStackTrace = e.InnerException?.StackTrace
-            };
-            Console.WriteLine(exceptionDetails);
-            return BadRequest(new { message = "An error occurred while creating the expense.", details = exceptionDetails });
+            return BadRequest(new { message = e.Message });
         }
     }
-    
+
     [HttpPut("{expenseId}")]
     public async Task<IActionResult> UpdateExpense([FromBody] UpdateExpenseResource updateExpenseResource, [FromRoute] int expenseId)
     {
@@ -51,24 +38,16 @@ public class ExpensesController(IExpenseCommandService expenseCommandService, IE
         {
             var updateExpenseCommand = UpdateExpenseCommandFromResourceAssembler.ToCommandFromResource(updateExpenseResource, expenseId);
             var expense = await expenseCommandService.Handle(updateExpenseCommand);
-            if (expense is null) return BadRequest();
+            if (expense is null) return NotFound(new { message = "No se ha encontrado el gasto." });
             var resource = ExpenseResourceFromEntityAssembler.ToResourceFromEntity(expense);
             return Ok(resource);
         }
         catch (Exception e)
         {
-            var exceptionDetails = new
-            {
-                e.Message,
-                e.StackTrace,
-                InnerExceptionMessage = e.InnerException?.Message,
-                InnerExceptionStackTrace = e.InnerException?.StackTrace
-            };
-            Console.WriteLine(exceptionDetails);
-            return BadRequest(new { message = "An error occurred while updating the expense.", details = exceptionDetails });
+            return BadRequest(new { message = e.Message });
         }
     }
-    
+
     [HttpGet]
     public async Task<IActionResult> GetAllExpenses()
     {
@@ -77,12 +56,12 @@ public class ExpensesController(IExpenseCommandService expenseCommandService, IE
         var resources = expenses.Select(ExpenseResourceFromEntityAssembler.ToResourceFromEntity);
         return Ok(resources);
     }
-    
+
     [HttpGet("{expenseId}")]
     public async Task<IActionResult> GetExpenseById([FromRoute] int expenseId)
     {
         var expense = await expenseQueryService.Handle(new GetExpenseByIdQuery(expenseId));
-        if (expense == null) return NotFound();
+        if (expense == null) return NotFound(new { message = "No se ha encontrado el gasto." });
         var resource = ExpenseResourceFromEntityAssembler.ToResourceFromEntity(expense);
         return Ok(resource);
     }

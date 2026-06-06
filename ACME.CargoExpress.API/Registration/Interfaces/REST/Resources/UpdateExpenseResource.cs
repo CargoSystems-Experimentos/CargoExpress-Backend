@@ -1,3 +1,3 @@
-﻿namespace ACME.CargoExpress.API.Registration.Interfaces.REST.Resources;
+namespace ACME.CargoExpress.API.Registration.Interfaces.REST.Resources;
 
-public record UpdateExpenseResource(int FuelAmount, string FuelDescription, int ViaticsAmount, string ViaticsDescription, int TollsAmount, string TollsDescription, int TripId);
+public record UpdateExpenseResource(decimal FuelAmount, string FuelDescription, decimal ViaticsAmount, string ViaticsDescription, decimal TollsAmount, string TollsDescription, int TripId);
