@@ -8,32 +8,35 @@ public class Alert
     public Alert()
     {
         Title = string.Empty;
+        Type = string.Empty;
         Description = string.Empty;
         Date = DateTime.Now;
         Trip = new Trip();
     }
 
-    public Alert(string title, string description, DateTime date, int tripId, Trip trip)
-    {
-        Title = title;
-        Description = description;
-        Date = date;
-        TripId = tripId;
-        Trip = trip;
-    }
-
     public Alert(CreateAlertCommand command, Trip trip)
     {
         Title = command.Title;
+        Type = command.Type;
         Description = command.Description;
         Date = command.Date;
+        TripId = command.TripId;
         Trip = trip;
     }
 
     public int Id { get; set; }
     public string Title { get; set; }
+    public string Type { get; set; }
     public string Description { get; set; }
     public DateTime Date { get; set; }
     public int TripId { get; set; }
-    public Trip Trip { get; }
+    public Trip Trip { get; set; }
+
+    public void Update(UpdateAlertCommand command)
+    {
+        Title = command.Title;
+        Type = command.Type;
+        Description = command.Description;
+        Date = command.Date;
+    }
 }

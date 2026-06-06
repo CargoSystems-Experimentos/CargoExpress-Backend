@@ -89,8 +89,9 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
         //Alert Table
         builder.Entity<Alert>().HasKey(a => a.Id);
         builder.Entity<Alert>().Property(a => a.Id).IsRequired().ValueGeneratedOnAdd();
-        builder.Entity<Alert>().Property(a => a.Title).IsRequired().HasMaxLength(20);
-        builder.Entity<Alert>().Property(a => a.Description).IsRequired();
+        builder.Entity<Alert>().Property(a => a.Title).IsRequired().HasMaxLength(60);
+        builder.Entity<Alert>().Property(a => a.Type).IsRequired().HasMaxLength(60);
+        builder.Entity<Alert>().Property(a => a.Description).IsRequired().HasMaxLength(100);
         builder.Entity<Alert>().Property(a => a.Date).IsRequired();
         
         //OngoingTrip Table

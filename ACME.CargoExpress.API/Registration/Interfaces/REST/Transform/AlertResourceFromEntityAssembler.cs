@@ -7,6 +7,6 @@ public static class AlertResourceFromEntityAssembler
 {
     public static AlertResource ToResourceFromEntity(Alert entity)
     {
-        return new AlertResource(entity.Id, entity.Title, entity.Description, entity.Date, entity.TripId);
+        return new AlertResource(entity.Id, entity.Title, entity.Type, entity.Description, entity.Date, entity.TripId);
     }
 }

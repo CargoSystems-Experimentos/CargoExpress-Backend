@@ -1,4 +1,4 @@
-﻿using ACME.CargoExpress.API.Registration.Domain.Model.Queries;
+using ACME.CargoExpress.API.Registration.Domain.Model.Queries;
 using ACME.CargoExpress.API.Registration.Domain.Services;
 using ACME.CargoExpress.API.Registration.Interfaces.REST.Resources;
 using ACME.CargoExpress.API.Registration.Interfaces.REST.Transform;
@@ -9,7 +9,7 @@ namespace ACME.CargoExpress.API.Registration.Interfaces.REST;
 [ApiController]
 [Route("api/v1/[controller]")]
 public class AlertsController(IAlertCommandService alertCommandService, IAlertQueryService alertQueryService)
-    :ControllerBase
+    : ControllerBase
 {
     [HttpPost]
     public async Task<IActionResult> CreateAlert([FromBody] CreateAlertResource createAlertResource)
@@ -18,24 +18,33 @@ public class AlertsController(IAlertCommandService alertCommandService, IAlertQu
         {
             var createAlertCommand = CreateAlertCommandFromResourceAssembler.ToCommandFromResource(createAlertResource);
             var alert = await alertCommandService.Handle(createAlertCommand);
-            if (alert is null) return BadRequest();
+            if (alert is null) return BadRequest(new { message = "No se pudo crear la alerta." });
             var resource = AlertResourceFromEntityAssembler.ToResourceFromEntity(alert);
             return CreatedAtAction(nameof(GetAlertById), new { alertId = resource.Id }, resource);
         }
         catch (Exception e)
         {
-            var exceptionDetails = new
-            {
-                e.Message,
-                e.StackTrace,
-                InnerExceptionMessage = e.InnerException?.Message,
-                InnerExceptionStackTrace = e.InnerException?.StackTrace
-            };
-            Console.WriteLine(exceptionDetails);
-            return BadRequest(new { message = "An error occurred while creating the alert.", details = exceptionDetails });
+            return BadRequest(new { message = e.Message });
         }
     }
-    
+
+    [HttpPut("{alertId}")]
+    public async Task<IActionResult> UpdateAlert([FromBody] UpdateAlertResource updateAlertResource, [FromRoute] int alertId)
+    {
+        try
+        {
+            var command = UpdateAlertCommandFromResourceAssembler.ToCommandFromResource(updateAlertResource, alertId);
+            var alert = await alertCommandService.Handle(command);
+            if (alert is null) return NotFound(new { message = "No se ha encontrado la alerta." });
+            var resource = AlertResourceFromEntityAssembler.ToResourceFromEntity(alert);
+            return Ok(resource);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+    }
+
     [HttpGet]
     public async Task<IActionResult> GetAllAlerts()
     {
@@ -44,12 +53,12 @@ public class AlertsController(IAlertCommandService alertCommandService, IAlertQu
         var resources = alerts.Select(AlertResourceFromEntityAssembler.ToResourceFromEntity);
         return Ok(resources);
     }
-    
+
     [HttpGet("{alertId}")]
     public async Task<IActionResult> GetAlertById([FromRoute] int alertId)
     {
         var alert = await alertQueryService.Handle(new GetAlertByIdQuery(alertId));
-        if (alert == null) return NotFound();
+        if (alert is null) return NotFound(new { message = "No se ha encontrado la alerta." });
         var resource = AlertResourceFromEntityAssembler.ToResourceFromEntity(alert);
         return Ok(resource);
     }

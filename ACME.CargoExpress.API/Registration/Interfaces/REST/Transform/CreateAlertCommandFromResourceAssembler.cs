@@ -7,6 +7,6 @@ public static class CreateAlertCommandFromResourceAssembler
 {
     public static CreateAlertCommand ToCommandFromResource(CreateAlertResource resource)
     {
-        return new CreateAlertCommand(resource.Title, resource.Description, resource.Date, resource.TripId);
+        return new CreateAlertCommand(resource.Title, resource.Type, resource.Description, resource.Date, resource.TripId);
     }
 }
