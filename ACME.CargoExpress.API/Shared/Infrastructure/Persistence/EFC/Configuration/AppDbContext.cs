@@ -85,7 +85,8 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
         builder.Entity<Expense>().Property(e => e.ViaticsDescription).IsRequired();
         builder.Entity<Expense>().Property(e => e.TollsAmount).IsRequired();
         builder.Entity<Expense>().Property(e => e.TollsDescription).IsRequired();
-        
+        builder.Entity<Expense>().Property(e => e.State).IsRequired().HasDefaultValue(true);
+
         //Alert Table
         builder.Entity<Alert>().HasKey(a => a.Id);
         builder.Entity<Alert>().Property(a => a.Id).IsRequired().ValueGeneratedOnAdd();

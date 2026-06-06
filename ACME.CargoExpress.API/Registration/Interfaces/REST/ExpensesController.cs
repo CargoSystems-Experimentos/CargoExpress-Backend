@@ -1,4 +1,5 @@
-﻿using ACME.CargoExpress.API.Registration.Domain.Model.Queries;
+﻿using ACME.CargoExpress.API.Registration.Domain.Model.Commands;
+using ACME.CargoExpress.API.Registration.Domain.Model.Queries;
 using ACME.CargoExpress.API.Registration.Domain.Services;
 using ACME.CargoExpress.API.Registration.Interfaces.REST.Resources;
 using ACME.CargoExpress.API.Registration.Interfaces.REST.Transform;
@@ -84,5 +85,24 @@ public class ExpensesController(IExpenseCommandService expenseCommandService, IE
         if (expense == null) return NotFound();
         var resource = ExpenseResourceFromEntityAssembler.ToResourceFromEntity(expense);
         return Ok(resource);
+    }
+
+    [HttpPut("{expenseId}/state")]
+    public async Task<IActionResult> UpdateExpenseState([FromBody] UpdateExpenseStateResource updateExpenseStateResource, [FromRoute] int expenseId)
+    {
+        try
+        {
+            if (updateExpenseStateResource.State == null)
+                return BadRequest(new { message = "El campo 'state' es requerido y solo acepta true o false." });
+
+            var command = new UpdateExpenseStateCommand(expenseId, updateExpenseStateResource.State.Value);
+            var expense = await expenseCommandService.Handle(command);
+            if (expense == null) return NotFound(new { message = "No se ha encontrado el gasto." });
+            return Ok(new { id = expense.Id, state = expense.State });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
     }
 }

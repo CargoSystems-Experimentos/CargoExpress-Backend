@@ -39,18 +39,27 @@ public class ExpenseCommandService(IExpenseRepository expenseRepository ,ITripRe
         {
             return null;
         }
-        //Update the expense information
         expense.ViaticsAmount = command.ViaticsAmount;
         expense.ViaticsDescription = command.ViaticsDescription;
         expense.FuelAmount = command.FuelAmount;
         expense.FuelDescription = command.FuelDescription;
         expense.TollsAmount = command.TollsAmount;
         expense.TollsDescription = command.TollsDescription;
-    
+
         await unitOfWork.CompleteAsync();
         return expense;
     }
-    
-    
+
+    public async Task<Expense?> Handle(UpdateExpenseStateCommand command)
+    {
+        var expense = await expenseRepository.FindByIdAsync(command.ExpenseId);
+        if (expense == null) return null;
+
+        expense.State = command.State;
+        await unitOfWork.CompleteAsync();
+        return expense;
+    }
+
+
 }
  

@@ -13,6 +13,7 @@ public class Expense
         ViaticsDescription = string.Empty;
         TollsAmount = 0;
         TollsDescription = string.Empty;
+        State = true;
         Trip = new Trip();
     }
 
@@ -25,6 +26,7 @@ public class Expense
         TollsAmount = tollsAmount;
         TollsDescription = tollsDescription;
         TripId = tripId;
+        State = true;
         Trip = trip;
     }
 
@@ -36,9 +38,10 @@ public class Expense
         ViaticsDescription = command.ViaticsDescription;
         TollsAmount = command.TollsAmount;
         TollsDescription = command.TollsDescription;
+        State = true;
         Trip = trip;
     }
-    
+
     public int Id { get; set; }
     public int FuelAmount { get; set; }
     public string FuelDescription { get; set; }
@@ -46,9 +49,10 @@ public class Expense
     public string ViaticsDescription { get; set; }
     public int TollsAmount { get; set; }
     public string TollsDescription { get; set; }
-     
+    public bool State { get; set; }
+
     public int TripId { get; set; }
-    
+
     public Trip Trip { get; }
 
 }
