@@ -30,23 +30,56 @@ public class TripsController(ITripQueryService tripQueryService, ITripCommandSer
         }
     }
     
-    [HttpPut("{tripId}")]
-    public async Task<IActionResult> UpdateTrip([FromBody] UpdateTripResource updateTripResource, [FromRoute] int tripId)
+    [HttpPut("{tripId}/details")]
+    public async Task<IActionResult> UpdateTripDetails([FromBody] UpdateTripDetailsResource resource, [FromRoute] int tripId)
     {
         try
         {
-            var updateTripCommand = UpdateTripCommandFromResourceAssembler.ToCommandFromResource(updateTripResource, tripId);
-            var trip = await tripCommandService.Handle(updateTripCommand);
+            var command = UpdateTripDetailsCommandFromResourceAssembler.ToCommandFromResource(resource, tripId);
+            var trip = await tripCommandService.Handle(command);
             if (trip is null) return NotFound(new { message = "No se ha encontrado el viaje." });
-            var resource = TripResourceFromEntityAssembler.ToResourceFromEntity(trip);
-            return Ok(resource);
+            var result = TripResourceFromEntityAssembler.ToResourceFromEntity(trip);
+            return Ok(new
+            {
+                id = trip.Id,
+                name = trip.Name,
+                type = trip.Type,
+                weight = trip.Weight,
+                driverId = trip.DriverId,
+                vehicleId = trip.VehicleId,
+                clientId = trip.ClientId,
+            });
         }
         catch (Exception e)
         {
             return BadRequest(new { message = e.Message });
         }
     }
-    
+
+    [HttpPut("{tripId}/schedule")]
+    public async Task<IActionResult> UpdateTripSchedule([FromBody] UpdateTripScheduleResource resource, [FromRoute] int tripId)
+    {
+        try
+        {
+            var command = UpdateTripScheduleCommandFromResourceAssembler.ToCommandFromResource(resource, tripId);
+            var trip = await tripCommandService.Handle(command);
+            if (trip is null) return NotFound(new { message = "No se ha encontrado el viaje." });
+            var result = TripResourceFromEntityAssembler.ToResourceFromEntity(trip);
+            return Ok(new
+            {
+                id = trip.Id,
+                loadLocation = trip.LoadLocation,
+                loadDate = trip.LoadDate,
+                unloadLocation = trip.UnloadLocation,
+                unloadDate = trip.UnloadDate
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = e.Message });
+        }
+    }
+
     [HttpPut("{tripId}/state")]
     public async Task<IActionResult> UpdateTripState([FromBody] UpdateTripStateResource updateTripStateResource, [FromRoute] int tripId)
     {
@@ -56,7 +89,11 @@ public class TripsController(ITripQueryService tripQueryService, ITripCommandSer
             var trip = await tripCommandService.Handle(command);
             if (trip is null) return NotFound(new { message = "No se ha encontrado el viaje." });
             var resource = TripResourceFromEntityAssembler.ToResourceFromEntity(trip);
-            return Ok(resource);
+            return Ok(new
+            {
+                id = trip.Id,
+                state = trip.State
+            });
         }
         catch (Exception e)
         {

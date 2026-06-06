@@ -1,4 +1,4 @@
-﻿using ACME.CargoExpress.API.User.Domain.Repositories;
+using ACME.CargoExpress.API.User.Domain.Repositories;
 using ACME.CargoExpress.API.Registration.Domain.Model.Aggregates;
 using ACME.CargoExpress.API.Registration.Domain.Model.Commands;
 using ACME.CargoExpress.API.Registration.Domain.Model.Entities;
@@ -19,8 +19,10 @@ public class TripCommandService(
 {
     public async Task<Trip?> Handle(CreateTripCommand command)
     {
-        ValidateFields(command.Name, command.Type, command.Weight, command.LoadLocation,
-            command.LoadDate, command.UnloadLocation, command.UnloadDate);
+        ValidateName(command.Name);
+        ValidateType(command.Type);
+        ValidateWeight(command.Weight);
+        ValidateScheduleFields(command.LoadLocation, command.LoadDate, command.UnloadLocation, command.UnloadDate);
 
         var client = await clientRepository.FindByIdAsync(command.ClientId);
         if (client == null)
@@ -38,9 +40,6 @@ public class TripCommandService(
         var vehicle = await ValidateVehicleAsync(command.VehicleId, entrepreneur.Id);
 
         var trip = new Trip(command, driver, vehicle, client, entrepreneur);
-
-        driver.State = "UNAVAILABLE";
-        vehicle.State = "UNAVAILABLE";
 
         await tripRepository.AddAsync(trip);
         await unitOfWork.CompleteAsync();
@@ -63,66 +62,147 @@ public class TripCommandService(
         return trip;
     }
 
-    public async Task<Trip?> Handle(UpdateTripCommand command)
+    public async Task<Trip?> Handle(UpdateTripDetailsCommand command)
     {
         var trip = await tripRepository.FindByIdAsync(command.TripId);
         if (trip == null)
             return null;
 
-        ValidateFields(command.Name, command.Type, command.Weight, command.LoadLocation,
-            command.LoadDate, command.UnloadLocation, command.UnloadDate);
+        if (trip.State == "FINISHED")
+            throw new InvalidOperationException("El viaje ha finalizado y no puede modificarse.");
+        if (trip.State == "CANCELED")
+            throw new InvalidOperationException("El viaje ha sido cancelado y no puede modificarse.");
+
+        if (trip.State == "PROGRESS")
+        {
+            if (command.Type != trip.Type)
+                throw new InvalidOperationException("El tipo del viaje no puede modificarse cuando el viaje está en curso.");
+            if (command.Weight != trip.Weight)
+                throw new InvalidOperationException("El peso del viaje no puede modificarse cuando el viaje está en curso.");
+            if (command.DriverId != trip.DriverId)
+                throw new InvalidOperationException("El conductor no puede modificarse cuando el viaje está en curso.");
+            if (command.VehicleId != trip.VehicleId)
+                throw new InvalidOperationException("El vehículo no puede modificarse cuando el viaje está en curso.");
+            if (command.ClientId != trip.ClientId)
+                throw new InvalidOperationException("El cliente no puede modificarse cuando el viaje está en curso.");
+
+            ValidateName(command.Name);
+
+            var existingTrip = await tripRepository.FindByNameAsync(command.Name, trip.EntrepreneurId);
+            if (existingTrip != null && existingTrip.Id != command.TripId)
+                throw new ArgumentException("El nombre del viaje ya está registrado para este empresario.");
+
+            trip.Name = command.Name;
+            await unitOfWork.CompleteAsync();
+            return trip;
+        }
+
+        // AWAITING: all detail fields can be modified
+        ValidateName(command.Name);
+        ValidateType(command.Type);
+        ValidateWeight(command.Weight);
 
         var client = await clientRepository.FindByIdAsync(command.ClientId);
         if (client == null)
             throw new ArgumentException("El ID del cliente no fue encontrado.");
 
-        var entrepreneur = await entrepreneurRepository.FindByIdAsync(command.EntrepreneurId);
-        if (entrepreneur == null)
-            throw new ArgumentException("El ID del empresario no fue encontrado.");
-
-        var existingTrip = await tripRepository.FindByNameAsync(command.Name, entrepreneur.Id);
-        if (existingTrip != null && existingTrip.Id != command.TripId)
+        var dupTrip = await tripRepository.FindByNameAsync(command.Name, trip.EntrepreneurId);
+        if (dupTrip != null && dupTrip.Id != command.TripId)
             throw new ArgumentException("El nombre del viaje ya está registrado para este empresario.");
 
-        var driver = await ValidateDriverAsync(command.DriverId, entrepreneur.Id);
-        var vehicle = await ValidateVehicleAsync(command.VehicleId, entrepreneur.Id);
+        var driver = command.DriverId == trip.DriverId
+            ? await driverRepository.FindByIdAsync(command.DriverId)
+              ?? throw new ArgumentException("El ID del conductor no fue encontrado.")
+            : await ValidateDriverAsync(command.DriverId, trip.EntrepreneurId);
+
+        var vehicle = command.VehicleId == trip.VehicleId
+            ? await vehicleRepository.FindByIdAsync(command.VehicleId)
+              ?? throw new ArgumentException("El ID del vehículo no fue encontrado.")
+            : await ValidateVehicleAsync(command.VehicleId, trip.EntrepreneurId);
 
         trip.Name = command.Name;
         trip.Type = command.Type;
         trip.Weight = command.Weight;
-        trip.LoadLocation = command.LoadLocation;
-        trip.LoadDate = command.LoadDate;
-        trip.UnloadLocation = command.UnloadLocation;
-        trip.UnloadDate = command.UnloadDate;
         trip.DriverId = driver.Id;
         trip.VehicleId = vehicle.Id;
-        trip.ClientId = command.ClientId;
-        trip.EntrepreneurId = command.EntrepreneurId;
+        trip.ClientId = client.Id;
         trip.Driver = driver;
         trip.Vehicle = vehicle;
         trip.Client = client;
-        trip.Entrepreneur = entrepreneur;
 
         await unitOfWork.CompleteAsync();
         return trip;
     }
 
-    private static void ValidateFields(string name, string type, decimal weight, string loadLocation,
-        DateTime loadDate, string unloadLocation, DateTime unloadDate)
+    public async Task<Trip?> Handle(UpdateTripScheduleCommand command)
+    {
+        var trip = await tripRepository.FindByIdAsync(command.TripId);
+        if (trip == null)
+            return null;
+
+        if (trip.State == "FINISHED")
+            throw new InvalidOperationException("El viaje ha finalizado y no puede modificarse.");
+        if (trip.State == "CANCELED")
+            throw new InvalidOperationException("El viaje ha sido cancelado y no puede modificarse.");
+
+        if (trip.State == "PROGRESS")
+        {
+            if (!string.Equals(command.LoadLocation.Trim(), trip.LoadLocation.Trim(), StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException("El lugar de carga no puede modificarse cuando el viaje está en curso.");
+            if (command.LoadDate != trip.LoadDate)
+                throw new InvalidOperationException("La fecha de carga no puede modificarse cuando el viaje está en curso.");
+
+            if (string.IsNullOrWhiteSpace(command.UnloadLocation))
+                throw new ArgumentException("El lugar de descarga no puede estar vacío.");
+            if (command.UnloadLocation.Length > 100)
+                throw new ArgumentException("El lugar de descarga no puede exceder 100 caracteres.");
+            if (command.UnloadDate == default)
+                throw new ArgumentException("La fecha de descarga no puede estar vacía.");
+            if (trip.LoadDate >= command.UnloadDate)
+                throw new ArgumentException("La fecha y hora de carga debe ser anterior a la fecha y hora de descarga.");
+
+            trip.UnloadLocation = command.UnloadLocation;
+            trip.UnloadDate = command.UnloadDate;
+            await unitOfWork.CompleteAsync();
+            return trip;
+        }
+
+        // AWAITING: all schedule fields can be modified
+        ValidateScheduleFields(command.LoadLocation, command.LoadDate, command.UnloadLocation, command.UnloadDate);
+
+        trip.LoadLocation = command.LoadLocation;
+        trip.LoadDate = command.LoadDate;
+        trip.UnloadLocation = command.UnloadLocation;
+        trip.UnloadDate = command.UnloadDate;
+
+        await unitOfWork.CompleteAsync();
+        return trip;
+    }
+
+    private static void ValidateName(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("El nombre del viaje no puede estar vacío.");
         if (name.Length > 60)
             throw new ArgumentException("El nombre del viaje no puede exceder 60 caracteres.");
+    }
 
+    private static void ValidateType(string type)
+    {
         if (string.IsNullOrWhiteSpace(type))
             throw new ArgumentException("El tipo del viaje no puede estar vacío.");
         if (type.Length > 60)
             throw new ArgumentException("El tipo del viaje no puede exceder 60 caracteres.");
+    }
 
+    private static void ValidateWeight(decimal weight)
+    {
         if (!IsValidDecimal10_2(weight))
             throw new ArgumentException("El peso del viaje debe ser mayor a 0 y tener como máximo 2 decimales.");
+    }
 
+    private static void ValidateScheduleFields(string loadLocation, DateTime loadDate, string unloadLocation, DateTime unloadDate)
+    {
         if (string.IsNullOrWhiteSpace(loadLocation))
             throw new ArgumentException("El lugar de carga no puede estar vacío.");
         if (loadLocation.Length > 100)
