@@ -11,9 +11,20 @@ namespace ACME.CargoExpress.API.Registration.Interfaces.REST;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-public class ExpensesController(IExpenseCommandService expenseCommandService, IExpenseQueryService expenseQueryService)
+public class ExpensesController(
+    IExpenseCommandService expenseCommandService,
+    IExpenseQueryService expenseQueryService,
+    ITripQueryService tripQueryService,
+    IAuditLogCommandService auditLogCommandService)
     : ControllerBase
 {
+    private async Task RecordAuditAsync(int tripId, string action, object modifiedFields)
+    {
+        var trip = await tripQueryService.Handle(new GetTripByIdQuery(tripId));
+        if (trip is null) return;
+        await auditLogCommandService.Handle(new CreateAuditLogCommand("EXPENSES", action, trip.EntrepreneurId, modifiedFields));
+    }
+
     [HttpPost]
     public async Task<IActionResult> CreateExpense([FromBody] CreateExpenseResource createExpenseResource)
     {
@@ -22,6 +33,8 @@ public class ExpensesController(IExpenseCommandService expenseCommandService, IE
             var createExpenseCommand = CreateExpenseCommandFromResourceAssembler.ToCommandFromResource(createExpenseResource);
             var expense = await expenseCommandService.Handle(createExpenseCommand);
             if (expense is null) return BadRequest(new { message = "No se pudo crear el gasto." });
+            await RecordAuditAsync(expense.TripId, "CREATE",
+                new { expense.Id, expense.FuelAmount, expense.FuelDescription, expense.ViaticsAmount, expense.ViaticsDescription, expense.TollsAmount, expense.TollsDescription, expense.TripId, expense.State });
             var resource = ExpenseResourceFromEntityAssembler.ToResourceFromEntity(expense);
             return CreatedAtAction(nameof(GetExpenseById), new { expenseId = resource.Id }, resource);
         }
@@ -39,6 +52,8 @@ public class ExpensesController(IExpenseCommandService expenseCommandService, IE
             var updateExpenseCommand = UpdateExpenseCommandFromResourceAssembler.ToCommandFromResource(updateExpenseResource, expenseId);
             var expense = await expenseCommandService.Handle(updateExpenseCommand);
             if (expense is null) return NotFound(new { message = "No se ha encontrado el gasto." });
+            await RecordAuditAsync(expense.TripId, "UPDATE",
+                new { expense.Id, expense.FuelAmount, expense.FuelDescription, expense.ViaticsAmount, expense.ViaticsDescription, expense.TollsAmount, expense.TollsDescription });
             var resource = ExpenseResourceFromEntityAssembler.ToResourceFromEntity(expense);
             return Ok(resource);
         }
@@ -77,6 +92,7 @@ public class ExpensesController(IExpenseCommandService expenseCommandService, IE
             var command = new UpdateExpenseStateCommand(expenseId, updateExpenseStateResource.State.Value);
             var expense = await expenseCommandService.Handle(command);
             if (expense == null) return NotFound(new { message = "No se ha encontrado el gasto." });
+            await RecordAuditAsync(expense.TripId, "UPDATE", new { expense.Id, expense.State });
             return Ok(new { id = expense.Id, state = expense.State });
         }
         catch (Exception e)

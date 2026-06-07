@@ -1,4 +1,5 @@
-﻿using ACME.CargoExpress.API.Registration.Domain.Model.Queries;
+﻿using ACME.CargoExpress.API.Registration.Domain.Model.Commands;
+using ACME.CargoExpress.API.Registration.Domain.Model.Queries;
 using ACME.CargoExpress.API.Registration.Domain.Services;
 using ACME.CargoExpress.API.Registration.Interfaces.REST.Resources;
 using ACME.CargoExpress.API.Registration.Interfaces.REST.Transform;
@@ -8,7 +9,10 @@ namespace ACME.CargoExpress.API.Registration.Interfaces.REST;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-public class VehiclesController(IVehicleCommandService vehicleCommandService, IVehicleQueryService vehicleQueryService)
+public class VehiclesController(
+    IVehicleCommandService vehicleCommandService,
+    IVehicleQueryService vehicleQueryService,
+    IAuditLogCommandService auditLogCommandService)
     : ControllerBase
 {
     [HttpPost]
@@ -19,6 +23,8 @@ public class VehiclesController(IVehicleCommandService vehicleCommandService, IV
             var createVehicleCommand = CreateVehicleCommandFromResourceAssembler.ToCommandFromResource(createVehicleResource);
             var vehicle = await vehicleCommandService.Handle(createVehicleCommand);
             if (vehicle is null) return BadRequest(new { message = "No se pudo crear el vehículo." });
+            await auditLogCommandService.Handle(new CreateAuditLogCommand("VEHICLES", "CREATE", vehicle.EntrepreneurId,
+                new { vehicle.Id, vehicle.Name, vehicle.Model, vehicle.Plate, vehicle.TractorPlate, vehicle.MaxLoad, vehicle.Volume, vehicle.State, vehicle.EntrepreneurId }));
             var resource = VehicleResourceFromEntityAssembler.ToResourceFromEntity(vehicle);
             return CreatedAtAction(nameof(GetVehicleById), new { vehicleId = resource.Id }, resource);
         }
@@ -36,6 +42,8 @@ public class VehiclesController(IVehicleCommandService vehicleCommandService, IV
             var updateVehicleCommand = UpdateVehicleCommandFromResourceAssembler.ToCommandFromResource(updateVehicleResource, vehicleId);
             var vehicle = await vehicleCommandService.Handle(updateVehicleCommand);
             if (vehicle is null) return BadRequest(new { message = "No se pudo actualizar el nombre del vehículo." });
+            await auditLogCommandService.Handle(new CreateAuditLogCommand("VEHICLES", "UPDATE", vehicle.EntrepreneurId,
+                new { vehicle.Id, vehicle.Name }));
             return Ok(new
             {
                 id = vehicle.Id,
@@ -56,6 +64,10 @@ public class VehiclesController(IVehicleCommandService vehicleCommandService, IV
             var updateVehicleStateCommand = UpdateVehicleStateCommandFromResourceAssembler.ToCommandFromResource(updateVehicleStateResource, vehicleId);
             var vehicle = await vehicleCommandService.Handle(updateVehicleStateCommand);
             if (vehicle is null) return NotFound(new { message = "No se ha encontrado el vehículo." });
+
+            var auditAction = vehicle.State == "INACTIVE" ? "DELETE" : "UPDATE";
+            await auditLogCommandService.Handle(new CreateAuditLogCommand("VEHICLES", auditAction, vehicle.EntrepreneurId,
+                new { vehicle.Id, vehicle.State }));
 
             return Ok(new
             {

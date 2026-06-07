@@ -24,6 +24,7 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
     public DbSet<Expense> Expenses { get; set; }
     public DbSet<OngoingTrip> OngoingTrips { get; set; }
     public DbSet<Alert> Alerts { get; set; }
+    public DbSet<AuditLog> AuditLogs { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -95,6 +96,19 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
         builder.Entity<Alert>().Property(a => a.Description).IsRequired().HasMaxLength(100);
         builder.Entity<Alert>().Property(a => a.Date).IsRequired();
         
+        //AuditLog Table
+        builder.Entity<AuditLog>().HasKey(a => a.Id);
+        builder.Entity<AuditLog>().Property(a => a.Id).IsRequired().ValueGeneratedNever();
+        builder.Entity<AuditLog>().Property(a => a.EntityType).IsRequired().HasMaxLength(20);
+        builder.Entity<AuditLog>().Property(a => a.Action).IsRequired().HasMaxLength(10);
+        builder.Entity<AuditLog>().Property(a => a.Timestamp).IsRequired();
+        builder.Entity<AuditLog>().Property(a => a.ModifiedFields).IsRequired().HasColumnType("json");
+        builder.Entity<AuditLog>()
+            .HasOne(a => a.Entrepreneur)
+            .WithMany()
+            .HasForeignKey(a => a.EntrepreneurId)
+            .HasPrincipalKey(e => e.Id);
+
         //OngoingTrip Table
         builder.Entity<OngoingTrip>().HasKey(ot => ot.Id);
         builder.Entity<OngoingTrip>().Property(ot => ot.Id).IsRequired().ValueGeneratedOnAdd();

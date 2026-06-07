@@ -49,6 +49,10 @@ public class UserCommandService(
         if (user == null || !hashingService.VerifyPassword(command.Password, user.PasswordHash))
             throw new InvalidCredentialsException();
 
+        // Deactivated accounts are not allowed to sign in even with valid credentials.
+        if (!user.State)
+            throw new InactiveUserException();
+
         var token = tokenService.GenerateToken(user);
 
         return (user, token);

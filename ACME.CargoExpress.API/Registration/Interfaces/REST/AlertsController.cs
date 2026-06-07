@@ -1,3 +1,4 @@
+using ACME.CargoExpress.API.Registration.Domain.Model.Commands;
 using ACME.CargoExpress.API.Registration.Domain.Model.Queries;
 using ACME.CargoExpress.API.Registration.Domain.Services;
 using ACME.CargoExpress.API.Registration.Interfaces.REST.Resources;
@@ -8,7 +9,11 @@ namespace ACME.CargoExpress.API.Registration.Interfaces.REST;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-public class AlertsController(IAlertCommandService alertCommandService, IAlertQueryService alertQueryService)
+public class AlertsController(
+    IAlertCommandService alertCommandService,
+    IAlertQueryService alertQueryService,
+    ITripQueryService tripQueryService,
+    IAuditLogCommandService auditLogCommandService)
     : ControllerBase
 {
     [HttpPost]
@@ -19,25 +24,12 @@ public class AlertsController(IAlertCommandService alertCommandService, IAlertQu
             var createAlertCommand = CreateAlertCommandFromResourceAssembler.ToCommandFromResource(createAlertResource);
             var alert = await alertCommandService.Handle(createAlertCommand);
             if (alert is null) return BadRequest(new { message = "No se pudo crear la alerta." });
+            var trip = await tripQueryService.Handle(new GetTripByIdQuery(alert.TripId));
+            if (trip is not null)
+                await auditLogCommandService.Handle(new CreateAuditLogCommand("ALERTS", "CREATE", trip.EntrepreneurId,
+                    new { alert.Id, alert.Title, alert.Type, alert.Description, alert.Date, alert.TripId }));
             var resource = AlertResourceFromEntityAssembler.ToResourceFromEntity(alert);
             return CreatedAtAction(nameof(GetAlertById), new { alertId = resource.Id }, resource);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { message = e.Message });
-        }
-    }
-
-    [HttpPut("{alertId}")]
-    public async Task<IActionResult> UpdateAlert([FromBody] UpdateAlertResource updateAlertResource, [FromRoute] int alertId)
-    {
-        try
-        {
-            var command = UpdateAlertCommandFromResourceAssembler.ToCommandFromResource(updateAlertResource, alertId);
-            var alert = await alertCommandService.Handle(command);
-            if (alert is null) return NotFound(new { message = "No se ha encontrado la alerta." });
-            var resource = AlertResourceFromEntityAssembler.ToResourceFromEntity(alert);
-            return Ok(resource);
         }
         catch (Exception e)
         {

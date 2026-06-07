@@ -85,6 +85,11 @@ public class ClientsController(
         if (client == null)
             return NotFound(new { message = $"No se encontró un cliente con el DNI '{dni}'." });
 
+        // The associated user account must be active to expose the client's data.
+        if (!client.User.State)
+            return StatusCode(StatusCodes.Status403Forbidden,
+                new { message = $"La cuenta del cliente con el DNI '{dni}' está desactivada." });
+
         var resource = ClientResourceFromEntityAssembler.ToResourceFromEntity(client);
         return Ok(resource);
     }

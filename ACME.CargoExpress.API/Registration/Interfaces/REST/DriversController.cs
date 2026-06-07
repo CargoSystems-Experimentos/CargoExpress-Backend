@@ -1,3 +1,4 @@
+using ACME.CargoExpress.API.Registration.Domain.Model.Commands;
 using ACME.CargoExpress.API.Registration.Domain.Model.Queries;
 using ACME.CargoExpress.API.Registration.Domain.Services;
 using ACME.CargoExpress.API.Registration.Interfaces.REST.Resources;
@@ -8,7 +9,10 @@ namespace ACME.CargoExpress.API.Registration.Interfaces.REST;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-public class DriversController(IDriverCommandService driverCommandService, IDriverQueryService driverQueryService)
+public class DriversController(
+    IDriverCommandService driverCommandService,
+    IDriverQueryService driverQueryService,
+    IAuditLogCommandService auditLogCommandService)
     : ControllerBase
 {
     [HttpPost]
@@ -19,6 +23,8 @@ public class DriversController(IDriverCommandService driverCommandService, IDriv
             var createDriverCommand = CreateDriverCommandFromResourceAssembler.ToCommandFromResource(createDriverResource);
             var driver = await driverCommandService.Handle(createDriverCommand);
             if (driver is null) return BadRequest(new { message = "No se pudo crear el conductor." });
+            await auditLogCommandService.Handle(new CreateAuditLogCommand("DRIVERS", "CREATE", driver.EntrepreneurId,
+                new { driver.Id, driver.Name, driver.Dni, driver.License, driver.ContactNumber, driver.State, driver.EntrepreneurId }));
             var resource = DriverResourceFromEntityAssembler.ToResourceFromEntity(driver);
             return CreatedAtAction(nameof(GetDriverById), new { driverId = resource.Id }, resource);
         }
@@ -36,6 +42,8 @@ public class DriversController(IDriverCommandService driverCommandService, IDriv
             var updateDriverCommand = UpdateDriverCommandFromResourceAssembler.ToCommandFromResource(updateDriverResource, driverId);
             var driver = await driverCommandService.Handle(updateDriverCommand);
             if (driver is null) return NotFound(new { message = "No se ha encontrado el conductor." });
+            await auditLogCommandService.Handle(new CreateAuditLogCommand("DRIVERS", "UPDATE", driver.EntrepreneurId,
+                new { driver.Id, driver.Name, driver.ContactNumber }));
             return Ok(new
             {
                 id = driver.Id,
@@ -57,6 +65,9 @@ public class DriversController(IDriverCommandService driverCommandService, IDriv
             var updateDriverStateCommand = UpdateDriverStateCommandFromResourceAssembler.ToCommandFromResource(updateDriverStateResource, driverId);
             var driver = await driverCommandService.Handle(updateDriverStateCommand);
             if (driver is null) return NotFound(new { message = "No se ha encontrado el conductor." });
+            var auditAction = driver.State == "INACTIVE" ? "DELETE" : "UPDATE";
+            await auditLogCommandService.Handle(new CreateAuditLogCommand("DRIVERS", auditAction, driver.EntrepreneurId,
+                new { driver.Id, driver.State }));
             return Ok(new
             {
                 id = driver.Id,

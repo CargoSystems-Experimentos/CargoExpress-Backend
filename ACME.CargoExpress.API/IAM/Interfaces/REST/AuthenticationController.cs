@@ -45,6 +45,11 @@ public class AuthenticationController(IUserCommandService userCommandService) : 
         {
             return Unauthorized(new { message = e.Message });
         }
+        // Valid credentials but the account is deactivated (403 Forbidden)
+        catch (InactiveUserException e)
+        {
+            return StatusCode(StatusCodes.Status403Forbidden, new { message = e.Message });
+        }
     }
 
     /**

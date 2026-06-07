@@ -9,7 +9,10 @@ namespace ACME.CargoExpress.API.Registration.Interfaces.REST;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-public class TripsController(ITripQueryService tripQueryService, ITripCommandService tripCommandService)
+public class TripsController(
+    ITripQueryService tripQueryService,
+    ITripCommandService tripCommandService,
+    IAuditLogCommandService auditLogCommandService)
     : ControllerBase
 {
     [HttpPost]
@@ -20,6 +23,8 @@ public class TripsController(ITripQueryService tripQueryService, ITripCommandSer
             var createTripCommand = CreateTripCommandFromResourceAssembler.ToCommandFromResource(createTripResource);
             var trip = await tripCommandService.Handle(createTripCommand);
             if (trip is null) return BadRequest(new { message = "No se pudo crear el viaje." });
+            await auditLogCommandService.Handle(new CreateAuditLogCommand("TRIPS", "CREATE", trip.EntrepreneurId,
+                new { trip.Id, trip.Name, trip.Type, trip.Weight, trip.LoadLocation, trip.LoadDate, trip.UnloadLocation, trip.UnloadDate, trip.DriverId, trip.VehicleId, trip.ClientId, trip.EntrepreneurId, trip.State }));
             var resource = TripResourceFromEntityAssembler.ToResourceFromEntity(trip);
             return CreatedAtAction(nameof(GetTripById), new { tripId = resource.Id }, resource);
 
@@ -38,6 +43,8 @@ public class TripsController(ITripQueryService tripQueryService, ITripCommandSer
             var command = UpdateTripDetailsCommandFromResourceAssembler.ToCommandFromResource(resource, tripId);
             var trip = await tripCommandService.Handle(command);
             if (trip is null) return NotFound(new { message = "No se ha encontrado el viaje." });
+            await auditLogCommandService.Handle(new CreateAuditLogCommand("TRIPS", "UPDATE", trip.EntrepreneurId,
+                new { trip.Id, trip.Name, trip.Type, trip.Weight, trip.DriverId, trip.VehicleId, trip.ClientId }));
             var result = TripResourceFromEntityAssembler.ToResourceFromEntity(trip);
             return Ok(new
             {
@@ -64,6 +71,8 @@ public class TripsController(ITripQueryService tripQueryService, ITripCommandSer
             var command = UpdateTripScheduleCommandFromResourceAssembler.ToCommandFromResource(resource, tripId);
             var trip = await tripCommandService.Handle(command);
             if (trip is null) return NotFound(new { message = "No se ha encontrado el viaje." });
+            await auditLogCommandService.Handle(new CreateAuditLogCommand("TRIPS", "UPDATE", trip.EntrepreneurId,
+                new { trip.Id, trip.LoadLocation, trip.LoadDate, trip.UnloadLocation, trip.UnloadDate }));
             var result = TripResourceFromEntityAssembler.ToResourceFromEntity(trip);
             return Ok(new
             {
@@ -88,6 +97,8 @@ public class TripsController(ITripQueryService tripQueryService, ITripCommandSer
             var command = new UpdateTripStateCommand(tripId, updateTripStateResource.State);
             var trip = await tripCommandService.Handle(command);
             if (trip is null) return NotFound(new { message = "No se ha encontrado el viaje." });
+            await auditLogCommandService.Handle(new CreateAuditLogCommand("TRIPS", "UPDATE", trip.EntrepreneurId,
+                new { trip.Id, trip.State }));
             var resource = TripResourceFromEntityAssembler.ToResourceFromEntity(trip);
             return Ok(new
             {

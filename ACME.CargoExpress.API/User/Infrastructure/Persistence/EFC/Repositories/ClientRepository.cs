@@ -16,6 +16,7 @@ public class ClientRepository(AppDbContext context)
     public async Task<Client?> FindByDniAsync(string dni)
     {
         return await Context.Set<Client>()
+            .Include(c => c.User)
             .FirstOrDefaultAsync(c => c.Dni == dni);
     }
 }
