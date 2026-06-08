@@ -11,5 +11,16 @@
     &lt;ProjectFile&gt;891E7D0F-5899-4643-AD98-F8C4BBC8FC0C/f:TripUnitTest.cs&lt;/ProjectFile&gt;&#xD;
     &lt;ProjectFile&gt;891E7D0F-5899-4643-AD98-F8C4BBC8FC0C/f:UserUnitTest.cs&lt;/ProjectFile&gt;&#xD;
     &lt;ProjectFile&gt;891E7D0F-5899-4643-AD98-F8C4BBC8FC0C/f:VehicleUnitTest.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;C2A7F3E1-8B4D-4F6A-9E2C-1D5A8B3C7F90/f:AlertIntegrationTests.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;C2A7F3E1-8B4D-4F6A-9E2C-1D5A8B3C7F90/f:AuditLogIntegrationTests.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;C2A7F3E1-8B4D-4F6A-9E2C-1D5A8B3C7F90/f:ClientIntegrationTests.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;C2A7F3E1-8B4D-4F6A-9E2C-1D5A8B3C7F90/f:DriverIntegrationTests.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;C2A7F3E1-8B4D-4F6A-9E2C-1D5A8B3C7F90/f:EntrepreneurIntegrationTests.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;C2A7F3E1-8B4D-4F6A-9E2C-1D5A8B3C7F90/f:ExpenseIntegrationTests.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;C2A7F3E1-8B4D-4F6A-9E2C-1D5A8B3C7F90/f:IntegrationTestBase.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;C2A7F3E1-8B4D-4F6A-9E2C-1D5A8B3C7F90/f:OngoingTripIntegrationTests.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;C2A7F3E1-8B4D-4F6A-9E2C-1D5A8B3C7F90/f:TripIntegrationTests.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;C2A7F3E1-8B4D-4F6A-9E2C-1D5A8B3C7F90/f:UserIntegrationTests.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;C2A7F3E1-8B4D-4F6A-9E2C-1D5A8B3C7F90/f:VehicleIntegrationTests.cs&lt;/ProjectFile&gt;&#xD;
   &lt;/Or&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

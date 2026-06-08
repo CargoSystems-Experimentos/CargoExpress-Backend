@@ -7,43 +7,32 @@ namespace CargoExpress.IntegrationTests;
 
 public class ExpenseIntegrationTests : IntegrationTestBase
 {
-    private static Trip BuildTrip(string name = "Test Trip") => new Trip
+    private async Task<(ACME.CargoExpress.API.Shared.Infrastructure.Persistence.EFC.Configuration.AppDbContext dbContext, Trip trip)>
+        SetupTripAsync(string tripName = "Test Trip")
     {
-        Name = name,
-        Type = "Electronics",
-        Weight = 100,
-        LoadLocation = "Lima",
-        LoadDate = DateTime.Now,
-        UnloadLocation = "Callao",
-        UnloadDate = DateTime.Now.AddHours(2),
-        DriverId = 1,
-        VehicleId = 1,
-        ClientId = 1,
-        EntrepreneurId = 1
-    };
+        var (dbContext, driver, vehicle, client, entrepreneur) = await CreateTripSetupAsync();
+        var trip = await CreateTripAsync(dbContext, tripName, driver, vehicle, client, entrepreneur);
+        return (dbContext, trip);
+    }
 
     [Fact]
     public async Task CreateExpense_WithValidData_ShouldSucceed()
     {
-        var dbContext = CreateDbContext();
-        var tripRepository = new TripRepository(dbContext);
+        var (dbContext, trip) = await SetupTripAsync();
         var expenseRepository = new ExpenseRepository(dbContext);
         var unitOfWork = new UnitOfWork(dbContext);
 
-        var trip = BuildTrip();
-        await tripRepository.AddAsync(trip);
-        await unitOfWork.CompleteAsync();
-
-        var expense = new Expense(200, "Gasolina", 50, "Viaticos dia", 30, "Peaje norte", trip.Id, trip);
+        var expense = new Expense(200m, "Gasolina", 50m, "Viaticos dia", 30m, "Peaje norte", trip.Id, trip);
         await expenseRepository.AddAsync(expense);
         await unitOfWork.CompleteAsync();
 
         var retrieved = await expenseRepository.FindByIdAsync(expense.Id);
         Assert.NotNull(retrieved);
-        Assert.Equal(200, retrieved.FuelAmount);
+        Assert.Equal(200m, retrieved.FuelAmount);
         Assert.Equal("Gasolina", retrieved.FuelDescription);
-        Assert.Equal(50, retrieved.ViaticsAmount);
-        Assert.Equal(30, retrieved.TollsAmount);
+        Assert.Equal(50m, retrieved.ViaticsAmount);
+        Assert.Equal(30m, retrieved.TollsAmount);
+        Assert.True(retrieved.State);
 
         CleanupDatabase(dbContext);
     }
@@ -51,23 +40,18 @@ public class ExpenseIntegrationTests : IntegrationTestBase
     [Fact]
     public async Task FindExpenseByTripId_ShouldReturnExpense()
     {
-        var dbContext = CreateDbContext();
-        var tripRepository = new TripRepository(dbContext);
+        var (dbContext, trip) = await SetupTripAsync("Trip with Expense");
         var expenseRepository = new ExpenseRepository(dbContext);
         var unitOfWork = new UnitOfWork(dbContext);
 
-        var trip = BuildTrip("Trip with Expense");
-        await tripRepository.AddAsync(trip);
-        await unitOfWork.CompleteAsync();
-
-        var expense = new Expense(150, "Diesel", 75, "Hotel", 20, "Peaje sur", trip.Id, trip);
+        var expense = new Expense(150m, "Diesel", 75m, "Hotel", 20m, "Peaje sur", trip.Id, trip);
         await expenseRepository.AddAsync(expense);
         await unitOfWork.CompleteAsync();
 
         var found = await expenseRepository.FindByTripIdAsync(trip.Id);
 
         Assert.NotNull(found);
-        Assert.Equal(150, found.FuelAmount);
+        Assert.Equal(150m, found.FuelAmount);
         Assert.Equal("Diesel", found.FuelDescription);
         Assert.Equal(trip.Id, found.TripId);
 
@@ -90,30 +74,25 @@ public class ExpenseIntegrationTests : IntegrationTestBase
     [Fact]
     public async Task UpdateExpense_ShouldSucceed()
     {
-        var dbContext = CreateDbContext();
-        var tripRepository = new TripRepository(dbContext);
+        var (dbContext, trip) = await SetupTripAsync("Update Expense Trip");
         var expenseRepository = new ExpenseRepository(dbContext);
         var unitOfWork = new UnitOfWork(dbContext);
 
-        var trip = BuildTrip("Update Expense Trip");
-        await tripRepository.AddAsync(trip);
-        await unitOfWork.CompleteAsync();
-
-        var expense = new Expense(100, "Original fuel", 40, "Original viatics", 10, "Original toll", trip.Id, trip);
+        var expense = new Expense(100m, "Original fuel", 40m, "Original viatics", 10m, "Original toll", trip.Id, trip);
         await expenseRepository.AddAsync(expense);
         await unitOfWork.CompleteAsync();
 
-        expense.FuelAmount = 250;
+        expense.FuelAmount = 250m;
         expense.FuelDescription = "Updated fuel";
-        expense.TollsAmount = 60;
+        expense.TollsAmount = 60m;
         expenseRepository.Update(expense);
         await unitOfWork.CompleteAsync();
 
         var updated = await expenseRepository.FindByIdAsync(expense.Id);
         Assert.NotNull(updated);
-        Assert.Equal(250, updated.FuelAmount);
+        Assert.Equal(250m, updated.FuelAmount);
         Assert.Equal("Updated fuel", updated.FuelDescription);
-        Assert.Equal(60, updated.TollsAmount);
+        Assert.Equal(60m, updated.TollsAmount);
 
         CleanupDatabase(dbContext);
     }

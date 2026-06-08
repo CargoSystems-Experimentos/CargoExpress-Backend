@@ -13,13 +13,9 @@ public class DriverIntegrationTests : IntegrationTestBase
         var driverRepository = new DriverRepository(dbContext);
         var unitOfWork = new UnitOfWork(dbContext);
 
-        var driver = new Driver
-        {
-            Name = "Carlos Perez",
-            Dni = "12345678",
-            License = "A1B2C3D4E5",
-            ContactNumber = "987654321"
-        };
+        var user = await CreateUserAsync(dbContext, "entrepreneur1", "900000001", true);
+        var entrepreneur = await CreateEntrepreneurAsync(dbContext, user);
+        var driver = new Driver("Carlos Perez", "12345678", "A1B2C3D4E5", "987654321", entrepreneur.Id, entrepreneur);
 
         await driverRepository.AddAsync(driver);
         await unitOfWork.CompleteAsync();
@@ -30,6 +26,7 @@ public class DriverIntegrationTests : IntegrationTestBase
         Assert.Equal("12345678", retrieved.Dni);
         Assert.Equal("A1B2C3D4E5", retrieved.License);
         Assert.Equal("987654321", retrieved.ContactNumber);
+        Assert.Equal("AVAILABLE", retrieved.State);
 
         CleanupDatabase(dbContext);
     }
@@ -41,20 +38,11 @@ public class DriverIntegrationTests : IntegrationTestBase
         var driverRepository = new DriverRepository(dbContext);
         var unitOfWork = new UnitOfWork(dbContext);
 
-        var driver1 = new Driver
-        {
-            Name = "Driver One",
-            Dni = "11111111",
-            License = "LIC0000001",
-            ContactNumber = "111111111"
-        };
-        var driver2 = new Driver
-        {
-            Name = "Driver Two",
-            Dni = "22222222",
-            License = "LIC0000002",
-            ContactNumber = "222222222"
-        };
+        var user = await CreateUserAsync(dbContext, "entrepreneur1", "900000001", true);
+        var entrepreneur = await CreateEntrepreneurAsync(dbContext, user);
+
+        var driver1 = new Driver("Driver One", "11111111", "LIC0000001", "111111111", entrepreneur.Id, entrepreneur);
+        var driver2 = new Driver("Driver Two", "22222222", "LIC0000002", "222222222", entrepreneur.Id, entrepreneur);
 
         await driverRepository.AddAsync(driver1);
         await driverRepository.AddAsync(driver2);
@@ -75,13 +63,9 @@ public class DriverIntegrationTests : IntegrationTestBase
         var driverRepository = new DriverRepository(dbContext);
         var unitOfWork = new UnitOfWork(dbContext);
 
-        var driver = new Driver
-        {
-            Name = "Original Name",
-            Dni = "12345678",
-            License = "ORIG123456",
-            ContactNumber = "999999999"
-        };
+        var user = await CreateUserAsync(dbContext, "entrepreneur1", "900000001", true);
+        var entrepreneur = await CreateEntrepreneurAsync(dbContext, user);
+        var driver = new Driver("Original Name", "12345678", "ORIG123456", "999999999", entrepreneur.Id, entrepreneur);
 
         await driverRepository.AddAsync(driver);
         await unitOfWork.CompleteAsync();
@@ -108,6 +92,29 @@ public class DriverIntegrationTests : IntegrationTestBase
         var driver = await driverRepository.FindByIdAsync(999);
 
         Assert.Null(driver);
+
+        CleanupDatabase(dbContext);
+    }
+
+    [Fact]
+    public async Task FindDriversByEntrepreneurId_ShouldReturnCorrectDrivers()
+    {
+        var dbContext = CreateDbContext();
+        var driverRepository = new DriverRepository(dbContext);
+        var unitOfWork = new UnitOfWork(dbContext);
+
+        var user = await CreateUserAsync(dbContext, "entrepreneur1", "900000001", true);
+        var entrepreneur = await CreateEntrepreneurAsync(dbContext, user);
+        var driver = new Driver("Carlos Lopez", "11111111", "LIC0000001", "111111111", entrepreneur.Id, entrepreneur);
+
+        await driverRepository.AddAsync(driver);
+        await unitOfWork.CompleteAsync();
+
+        var result = await driverRepository.FindByEntrepreneurIdAsync(entrepreneur.Id);
+
+        Assert.NotNull(result);
+        Assert.Single(result);
+        Assert.Equal("Carlos Lopez", result.First().Name);
 
         CleanupDatabase(dbContext);
     }

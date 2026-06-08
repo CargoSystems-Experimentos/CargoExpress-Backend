@@ -1,9 +1,6 @@
-using System.Linq;
-using Xunit;
+using ACME.CargoExpress.API.Registration.Domain.Model.Entities;
 using ACME.CargoExpress.API.Registration.Infrastructure.Persistence.EFC.Repositories;
 using ACME.CargoExpress.API.Shared.Infrastructure.Persistence.EFC.Repositories;
-using ACME.CargoExpress.API.Registration.Domain.Model.Entities;
-
 
 namespace CargoExpress.IntegrationTests;
 
@@ -16,15 +13,9 @@ public class VehicleIntegrationTests : IntegrationTestBase
         var vehicleRepository = new VehicleRepository(dbContext);
         var unitOfWork = new UnitOfWork(dbContext);
 
-        var vehicle = new Vehicle
-        {
-            Name = "Volvo Truck",
-            Model = "Volvo FH16",
-            Plate = "ABC123",
-            TractorPlate = "TRC456",
-            MaxLoad = 20000f,
-            Volume = 80f
-        };
+        var user = await CreateUserAsync(dbContext, "entrepreneur1", "900000001", true);
+        var entrepreneur = await CreateEntrepreneurAsync(dbContext, user);
+        var vehicle = new Vehicle("Volvo Truck", "Volvo FH16", "ABC123", "TRC456", 20000m, 80m, entrepreneur.Id, entrepreneur);
 
         await vehicleRepository.AddAsync(vehicle);
         await unitOfWork.CompleteAsync();
@@ -35,8 +26,9 @@ public class VehicleIntegrationTests : IntegrationTestBase
         Assert.Equal("Volvo FH16", retrieved.Model);
         Assert.Equal("ABC123", retrieved.Plate);
         Assert.Equal("TRC456", retrieved.TractorPlate);
-        Assert.Equal(20000f, retrieved.MaxLoad);
-        Assert.Equal(80f, retrieved.Volume);
+        Assert.Equal(20000m, retrieved.MaxLoad);
+        Assert.Equal(80m, retrieved.Volume);
+        Assert.Equal("AVAILABLE", retrieved.State);
 
         CleanupDatabase(dbContext);
     }
@@ -48,24 +40,11 @@ public class VehicleIntegrationTests : IntegrationTestBase
         var vehicleRepository = new VehicleRepository(dbContext);
         var unitOfWork = new UnitOfWork(dbContext);
 
-        var vehicle1 = new Vehicle
-        {
-            Name = "Mercedes Truck",
-            Model = "Mercedes Actros",
-            Plate = "XYZ001",
-            TractorPlate = "TRC001",
-            MaxLoad = 18000f,
-            Volume = 70f
-        };
-        var vehicle2 = new Vehicle
-        {
-            Name = "Scania Truck",
-            Model = "Scania R500",
-            Plate = "XYZ002",
-            TractorPlate = "TRC002",
-            MaxLoad = 22000f,
-            Volume = 90f
-        };
+        var user = await CreateUserAsync(dbContext, "entrepreneur1", "900000001", true);
+        var entrepreneur = await CreateEntrepreneurAsync(dbContext, user);
+
+        var vehicle1 = new Vehicle("Mercedes Truck", "Mercedes Actros", "XYZ001", "TRC001", 18000m, 70m, entrepreneur.Id, entrepreneur);
+        var vehicle2 = new Vehicle("Scania Truck", "Scania R500", "XYZ002", "TRC002", 22000m, 90m, entrepreneur.Id, entrepreneur);
 
         await vehicleRepository.AddAsync(vehicle1);
         await vehicleRepository.AddAsync(vehicle2);
@@ -86,22 +65,16 @@ public class VehicleIntegrationTests : IntegrationTestBase
         var vehicleRepository = new VehicleRepository(dbContext);
         var unitOfWork = new UnitOfWork(dbContext);
 
-        var vehicle = new Vehicle
-        {
-            Name = "Old Truck",
-            Model = "Old Model",
-            Plate = "OLD001",
-            TractorPlate = "TRC000",
-            MaxLoad = 10000f,
-            Volume = 50f
-        };
+        var user = await CreateUserAsync(dbContext, "entrepreneur1", "900000001", true);
+        var entrepreneur = await CreateEntrepreneurAsync(dbContext, user);
+        var vehicle = new Vehicle("Old Truck", "Old Model", "OLD001", "TRC000", 10000m, 50m, entrepreneur.Id, entrepreneur);
 
         await vehicleRepository.AddAsync(vehicle);
         await unitOfWork.CompleteAsync();
 
         vehicle.Name = "Updated Truck";
         vehicle.Model = "New Model";
-        vehicle.MaxLoad = 15000f;
+        vehicle.MaxLoad = 15000m;
         vehicleRepository.Update(vehicle);
         await unitOfWork.CompleteAsync();
 
@@ -109,7 +82,7 @@ public class VehicleIntegrationTests : IntegrationTestBase
         Assert.NotNull(updated);
         Assert.Equal("Updated Truck", updated.Name);
         Assert.Equal("New Model", updated.Model);
-        Assert.Equal(15000f, updated.MaxLoad);
+        Assert.Equal(15000m, updated.MaxLoad);
 
         CleanupDatabase(dbContext);
     }
@@ -123,6 +96,29 @@ public class VehicleIntegrationTests : IntegrationTestBase
         var vehicle = await vehicleRepository.FindByIdAsync(999);
 
         Assert.Null(vehicle);
+
+        CleanupDatabase(dbContext);
+    }
+
+    [Fact]
+    public async Task FindVehiclesByEntrepreneurId_ShouldReturnCorrectVehicles()
+    {
+        var dbContext = CreateDbContext();
+        var vehicleRepository = new VehicleRepository(dbContext);
+        var unitOfWork = new UnitOfWork(dbContext);
+
+        var user = await CreateUserAsync(dbContext, "entrepreneur1", "900000001", true);
+        var entrepreneur = await CreateEntrepreneurAsync(dbContext, user);
+        var vehicle = new Vehicle("Volvo FH", "Volvo FH16 2022", "VLV001", "VLT001", 25000m, 100m, entrepreneur.Id, entrepreneur);
+
+        await vehicleRepository.AddAsync(vehicle);
+        await unitOfWork.CompleteAsync();
+
+        var result = await vehicleRepository.FindByEntrepreneurIdAsync(entrepreneur.Id);
+
+        Assert.NotNull(result);
+        Assert.Single(result);
+        Assert.Equal("Volvo FH", result.First().Name);
 
         CleanupDatabase(dbContext);
     }
