@@ -1,6 +1,6 @@
 ﻿[build]
 builder = "dockerfile"
-dockerfilePatch = "./Acme.CargoExpress.API/Dockerfile"
+dockerfilePatch = "./Dockerfile"
 
 [deploy]
 startCommand = "dotnet ACME.CargoExpress.API.dll"

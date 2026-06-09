@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CargoExpress.IntegrationTests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+87ede5456a6118b8405cb8a16e70b20fda7f7dd9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+df356be30eb7f40df56407741042a42bda554ddf")]
 [assembly: System.Reflection.AssemblyProductAttribute("CargoExpress.IntegrationTests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CargoExpress.IntegrationTests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
