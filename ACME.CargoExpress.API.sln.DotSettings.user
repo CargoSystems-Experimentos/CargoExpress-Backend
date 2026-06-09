@@ -1,16 +1,6 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=a935f6b9_002D5fe7_002D4df8_002D8b40_002D3c70bb2d458a/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from ClientUnitTest.cs" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=0118c195_002Dedc4_002D4a7a_002D83b0_002D764576e5e5fe/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Session" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;Or&gt;&#xD;
-    &lt;ProjectFile&gt;891E7D0F-5899-4643-AD98-F8C4BBC8FC0C/f:AlertUnitTest.cs&lt;/ProjectFile&gt;&#xD;
-    &lt;ProjectFile&gt;891E7D0F-5899-4643-AD98-F8C4BBC8FC0C/f:AuditLogUnitTest.cs&lt;/ProjectFile&gt;&#xD;
-    &lt;ProjectFile&gt;891E7D0F-5899-4643-AD98-F8C4BBC8FC0C/f:ClientUnitTest.cs&lt;/ProjectFile&gt;&#xD;
-    &lt;ProjectFile&gt;891E7D0F-5899-4643-AD98-F8C4BBC8FC0C/f:DriverUnitTest.cs&lt;/ProjectFile&gt;&#xD;
-    &lt;ProjectFile&gt;891E7D0F-5899-4643-AD98-F8C4BBC8FC0C/f:EntrepreneurUnitTest.cs&lt;/ProjectFile&gt;&#xD;
-    &lt;ProjectFile&gt;891E7D0F-5899-4643-AD98-F8C4BBC8FC0C/f:ExpenseUnitTest.cs&lt;/ProjectFile&gt;&#xD;
-    &lt;ProjectFile&gt;891E7D0F-5899-4643-AD98-F8C4BBC8FC0C/f:OngoingTripUnitTest.cs&lt;/ProjectFile&gt;&#xD;
-    &lt;ProjectFile&gt;891E7D0F-5899-4643-AD98-F8C4BBC8FC0C/f:TripUnitTest.cs&lt;/ProjectFile&gt;&#xD;
-    &lt;ProjectFile&gt;891E7D0F-5899-4643-AD98-F8C4BBC8FC0C/f:UserUnitTest.cs&lt;/ProjectFile&gt;&#xD;
-    &lt;ProjectFile&gt;891E7D0F-5899-4643-AD98-F8C4BBC8FC0C/f:VehicleUnitTest.cs&lt;/ProjectFile&gt;&#xD;
     &lt;ProjectFile&gt;C2A7F3E1-8B4D-4F6A-9E2C-1D5A8B3C7F90/f:AlertIntegrationTests.cs&lt;/ProjectFile&gt;&#xD;
     &lt;ProjectFile&gt;C2A7F3E1-8B4D-4F6A-9E2C-1D5A8B3C7F90/f:AuditLogIntegrationTests.cs&lt;/ProjectFile&gt;&#xD;
     &lt;ProjectFile&gt;C2A7F3E1-8B4D-4F6A-9E2C-1D5A8B3C7F90/f:ClientIntegrationTests.cs&lt;/ProjectFile&gt;&#xD;

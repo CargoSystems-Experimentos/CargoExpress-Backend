@@ -28,4 +28,10 @@
         <ProjectReference Include="..\ACME.CargoExpress.API\ACME.CargoExpress.API.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Update="Features\TS02_RegistroNuevoViaje.feature.cs">
+        <DependentUpon>TS02_RegistroNuevoViaje.feature</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
 </Project>
